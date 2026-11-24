@@ -8,6 +8,7 @@ ap.add_argument("--model", default="gemma-4-e4b-it-qat-w4a16-ct")
 ap.add_argument("--accel", default="t4x2", choices=["t4x2", "l4x4"])
 ap.add_argument("--limit", type=int, default=0)
 ap.add_argument("--slug", default="firebreak-capture")
+ap.add_argument("--workers", type=int, default=3)
 a = ap.parse_args()
 OUTD = ROOT / "evalkit/notebook/out"; shutil.rmtree(OUTD, ignore_errors=True)
 ds = OUTD / "dataset"; ds.mkdir(parents=True)
@@ -23,7 +24,7 @@ EK = Path(glob.glob("/kaggle/input/**/run_slice.py", recursive=True)[0]).parent
 W = Path("/kaggle/working/evalkit"); shutil.copytree(EK, W, dirs_exist_ok=True)
 zipfile.ZipFile(W / "firebreak-lite.zip.bin").extractall("/kaggle/working/firebreak_lite")
 cmd = [sys.executable, str(W / "run_slice.py"), "--model", "{a.model}", "--arms", "A=sample,B=/kaggle/working/firebreak_lite",
-       "--slice", str(W / "slice40.json"), "--workers", "3", "--limit", "{a.limit}"]
+       "--slice", str(W / "slice40.json"), "--workers", "{a.workers}", "--limit", "{a.limit}"]
 print(" ".join(cmd), flush=True)
 subprocess.run(cmd, check=True)
 '''
