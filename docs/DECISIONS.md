@@ -40,3 +40,9 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
 - The reported signature (junk key `<|"|>,filepath`, *"mandatory input parameters are not present: filepath"*) reproduces only when the model emits a stray `<|"|>` next to a content quote. The shrunk minimal trigger is content `"`.
 - Exposure: 38 of 129 tasks need a triple-quoted argument, and 24 have an argument that ends in a quote.
 - The safe_edit escape alphabet targets exactly those quote runs. The scan of 195,270 files in all 129 snapshots found 0 `@@…@@` tokens, so the alphabet is collision-free.
+
+**D-009 (2026-11-24): Capture runs pin the host's cp312 image and use fp16 on T4.**
+- The wheelhouse holds cp312 wheels. Kaggle's default image is Python 3.13, so the install failed (v1). The fix is pinning `gcr.io/kaggle-private-byod/python@sha256:37c64f7d…`, the image used by the host's notebook.
+- On T4 (compute capability 7.5), `dtype='auto'` resolves to the model's bf16, which vLLM refuses (v2). The fix is `dtype='half'` when bf16 isn't supported.
+- fp16 numerical behaviour of Gemma 4 E4B is an open risk. The smoke gate aborts before any task if output is garbage.
+- E4B-on-T4 numbers are **fault-shape data**. They are not the scorer's 31B/L4/bf16 rates.

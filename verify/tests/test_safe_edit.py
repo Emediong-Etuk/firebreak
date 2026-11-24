@@ -256,7 +256,9 @@ def test_property_apply_equals_list_splice(tmp_path_factory, before, repl, data,
         return
     want = before[: s - 1] + repl + before[e:]
     got = p.read_bytes().decode()
-    exp = nl.join(want) + (nl if (trailing and want) else "")
+    # a file with no line break at all has no detectable newline style: the tool uses "\n"
+    eff = nl if (len(before) > 1 or trailing) else "\n"
+    exp = eff.join(want) + (eff if (trailing and want) else "")
     if "@@" not in "".join(repl):
         assert got == exp
 

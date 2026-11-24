@@ -123,7 +123,7 @@ def main() -> int:
     ngpu = torch.cuda.device_count()
     bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
     cfg = VllmConfig(model=model_path, port=8000, host="127.0.0.1", tool_call_parser="gemma4", reasoning_parser="gemma4",
-                     max_model_len=32768, dtype="bfloat16" if bf16 else "auto", gpu_memory_utilization=0.90,
+                     max_model_len=32768, dtype="bfloat16" if bf16 else "half", gpu_memory_utilization=0.90,  # T4: no bf16
                      enable_auto_tool_choice=True, enable_lora=False, scheduler_reserve_full_isl=False,
                      tensor_parallel_size=4 if ngpu >= 4 else (2 if ngpu >= 2 else 1), startup_timeout=60 * 25,
                      extra_args=["--tool-parser-plugin", str(HERE / "capture_shim.py")])
