@@ -1,4 +1,4 @@
-"""Unit + property tests for submission/skills/safe_edit/scripts/edit.py."""
+"""Unit + property tests for submission/skills/safe-edit/scripts/edit.py."""
 import hashlib
 import importlib.util
 import os
@@ -11,7 +11,7 @@ from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
 ROOT = Path(__file__).resolve().parents[2]
-SCRIPT = ROOT / "submission/skills/safe_edit/scripts/edit.py"
+SCRIPT = ROOT / "submission/skills/safe-edit/scripts/edit.py"
 
 
 def load(ws: Path):

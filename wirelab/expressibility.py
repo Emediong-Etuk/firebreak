@@ -13,6 +13,8 @@ Writes evidence/safe_edit/expressibility.json and evidence/wirelab/c5_summary.js
 from __future__ import annotations
 
 import collections
+import sys as _sys
+_sys.dont_write_bytecode = True  # never leave __pycache__ inside submission/skills
 import importlib.util
 import json
 import os
@@ -26,7 +28,7 @@ import gold  # noqa: E402
 from parse_driver import Driver  # noqa: E402
 from render import render_tool_call  # noqa: E402
 
-SCRIPT = ROOT / "submission/skills/safe_edit/scripts/edit.py"
+SCRIPT = ROOT / "submission/skills/safe-edit/scripts/edit.py"
 
 
 def encode(lines: list[str]) -> str:

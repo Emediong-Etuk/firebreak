@@ -1,0 +1,259 @@
+{
+  "agents": [
+    {
+      "class": "LlmAgent",
+      "instruction_chars": 2239,
+      "model": "openai/gemma-4-31b-it-qat-w4a16-ct",
+      "name": "firebreak_agent",
+      "tools": [
+        {
+          "array_paths": [],
+          "name": "run_command",
+          "parameters": {
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "read_file",
+          "parameters": {
+            "properties": {
+              "end_line": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "filepath": {
+                "type": "string"
+              },
+              "start_line": {
+                "nullable": true,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "filepath"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "edit_file",
+          "parameters": {
+            "properties": {
+              "allow_multiple": {
+                "default": false,
+                "type": "boolean"
+              },
+              "filepath": {
+                "type": "string"
+              },
+              "new_string": {
+                "type": "string"
+              },
+              "old_string": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "filepath",
+              "old_string",
+              "new_string"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "write_file",
+          "parameters": {
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "filepath": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "filepath",
+              "content"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "get_status",
+          "parameters": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "submit_patch",
+          "parameters": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "get_code_neighbors",
+          "parameters": {
+            "properties": {
+              "edge_type": {
+                "nullable": true,
+                "type": "string"
+              },
+              "max_neighbors": {
+                "default": 50,
+                "type": "integer"
+              },
+              "node": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "node"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "search_similar_code",
+          "parameters": {
+            "properties": {
+              "k": {
+                "default": 10,
+                "type": "integer"
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "list_skills",
+          "parameters": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "load_skill",
+          "parameters": {
+            "properties": {
+              "skill_name": {
+                "description": "The name of the skill to load.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "skill_name"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "load_skill_resource",
+          "parameters": {
+            "properties": {
+              "file_path": {
+                "description": "The relative path to the resource (e.g., 'references/my_doc.md', 'assets/template.txt', or 'scripts/setup.sh').",
+                "type": "string"
+              },
+              "skill_name": {
+                "description": "The name of the skill.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "skill_name",
+              "file_path"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [
+            "/properties/args/anyOf/1",
+            "/properties/positional_args"
+          ],
+          "name": "run_skill_script",
+          "parameters": {
+            "properties": {
+              "args": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                ],
+                "description": "Optional arguments to pass to the script as key-value pairs (long options) or as a list of strings. If specified as a list, it is treated as the complete list of arguments, and 'short_options' and 'positional_args' must not be provided."
+              },
+              "file_path": {
+                "description": "The relative path to the script (e.g., 'scripts/setup.py').",
+                "type": "string"
+              },
+              "positional_args": {
+                "description": "Optional positional arguments to pass to the script. Must not be provided if 'args' is a list.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "short_options": {
+                "description": "Optional short options (single hyphen) to pass to the script as key-value pairs. Must not be provided if 'args' is a list.",
+                "type": "object"
+              },
+              "skill_name": {
+                "description": "The name of the skill.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "skill_name",
+              "file_path"
+            ],
+            "type": "object"
+          }
+        }
+      ]
+    }
+  ],
+  "allowed_array_exceptions": [],
+  "declared_models": [
+    "gemma-4-31b-it-qat-w4a16-ct"
+  ],
+  "failures": [
+    "array param exposed to model: agent=firebreak_agent tool=run_skill_script path=/properties/args/anyOf/1",
+    "array param exposed to model: agent=firebreak_agent tool=run_skill_script path=/properties/positional_args"
+  ],
+  "ok": false,
+  "submission": "submission",
+  "unpacked_bytes": 20846
+}

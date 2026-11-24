@@ -1,4 +1,4 @@
-"""safe_edit: quote-safe, hash-anchored line edits for /workspace (Firebreak).
+"""safe-edit: quote-safe, hash-anchored line edits for /workspace (Firebreak).
 
 Invocation takes NO tool arguments (keeps array-typed params off the wire). The model first
 writes the command (and payload) with write_file:
@@ -7,7 +7,7 @@ writes the command (and payload) with write_file:
                                      insert PATH AFTER:HH          (AFTER may be 0:00 for top of file)
                                      create PATH                   (new file from the payload)
   .firebreak/payload.txt  replacement text for apply/insert, ending with a line  @@END@@
-then calls run_skill_script(skill_name="safe_edit", file_path="scripts/edit.py").
+then calls run_skill_script(skill_name="safe-edit", file_path="scripts/edit.py").
 
 Escapes (decoded in the payload only): @@TQ@@ -> three double quotes, @@SQ3@@ -> three single quotes.
 They never occur in any of the 129 dev snapshots (evidence/wirelab/repo_scan.json).

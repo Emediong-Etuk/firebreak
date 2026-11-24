@@ -10,4 +10,7 @@ tools:
   - submit_patch
   - get_code_neighbors
   - search_similar_code
+skills:
+  - skills/safe-edit
+  - skills/airlock
 generate_content_config: !include configs/sampling.yaml
