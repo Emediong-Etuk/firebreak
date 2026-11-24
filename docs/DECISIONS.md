@@ -46,3 +46,9 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
 - On T4 (compute capability 7.5), `dtype='auto'` resolves to the model's bf16, which vLLM refuses (v2). `torch.cuda.is_bf16_supported()` also returns True on T4 because it counts emulation (v3). The fix is to choose fp16 whenever compute capability is below 8.0.
 - fp16 numerical behaviour of Gemma 4 E4B is an open risk. The smoke gate aborts before any task if output is garbage.
 - E4B-on-T4 numbers are **fault-shape data**. They are not the scorer's 31B/L4/bf16 rates.
+
+**D-010 (2026-11-24): Gemma 4 can't be served on T4 with vLLM 0.19.1. Capture runs need L4.**
+- v4 got past dtype: Marlin W4A16 loaded on T4.
+- It then failed in memory profiling. Gemma 4 has `global_head_dim=512`, so vLLM forces `TRITON_ATTN`, and `kernel_unified_attention_2d` needs 98,304 B of shared memory against T4's 65,536 B limit.
+- There's no config knob for this short of patching vLLM. The evidence is in `evidence/runs/2026-11-24_e4b_t4x2_attempts/attempts.json`.
+- C4 data must come from L4×4 (compute capability 8.9, bf16), which is also the scorer's hardware.

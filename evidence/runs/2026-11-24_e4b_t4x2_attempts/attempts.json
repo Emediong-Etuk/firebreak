@@ -1,0 +1,43 @@
+{
+ "run": "emediongetuk/firebreak-capture",
+ "attempts": [
+  {
+   "version": 1,
+   "result": "ERROR",
+   "cause": "default Kaggle image is Python 3.13; wheelhouse is cp312",
+   "fix": "pin host docker_image"
+  },
+  {
+   "version": 2,
+   "result": "ERROR",
+   "cause": "dtype auto -> bf16 unsupported on T4 (cc 7.5)",
+   "fix": "dtype half"
+  },
+  {
+   "version": 3,
+   "result": "ERROR",
+   "cause": "torch.cuda.is_bf16_supported() True on T4 (emulation) -> bf16 requested",
+   "fix": "choose bf16 by compute capability"
+  },
+  {
+   "version": 4,
+   "result": "ERROR",
+   "cause": "Gemma 4 global_head_dim=512 forces TRITON_ATTN; kernel_unified_attention_2d needs 98304 B shared memory, T4 limit 65536 B",
+   "fix": "none on T4 without patching vLLM; use L4 (cc 8.9)"
+  }
+ ],
+ "log_lines_v4": [
+  "[stage] installed {}",
+  "[stage] installed {}",
+  "[stage] arms {'arms': {'A': '/kaggle/working/arms/A', 'B': '/kaggle/working/arms/B'}}",
+  "[stage] arms {'arms': {'A': '/kaggle/working/arms/A', 'B': '/kaggle/working/arms/B'}}",
+  "(APIServer pid=58) INFO 11-24 18:18:52 [config.py:104] Gemma4 model has heterogeneous head dimensions (head_dim=256, global_head_dim=512). Forcing TRITON_ATTN backend to prevent mixed-backend numerical divergence.",
+  "(Worker_TP0 pid=130) INFO 11-24 18:20:24 [compressed_tensors_wNa16.py:112] Using MarlinLinearKernel for CompressedTensorsWNA16",
+  "(Worker_TP0 pid=130) INFO 11-24 18:20:24 [cuda.py:274] Using AttentionBackendEnum.TRITON_ATTN backend.",
+  "(Worker_TP1 pid=131) INFO 11-24 18:20:24 [compressed_tensors_wNa16.py:112] Using MarlinLinearKernel for CompressedTensorsWNA16",
+  "(Worker_TP1 pid=131) INFO 11-24 18:20:24 [cuda.py:274] Using AttentionBackendEnum.TRITON_ATTN backend.",
+  "(Worker_TP0 pid=130) INFO 11-24 18:20:24 [cuda.py:274] Using AttentionBackendEnum.TRITON_ATTN backend.",
+  "(Worker_TP1 pid=131) INFO 11-24 18:20:24 [cuda.py:274] Using AttentionBackendEnum.TRITON_ATTN backend.",
+  "(Worker_TP0 pid=130) ERROR 11-24 18:23:05 [multiproc_executor.py:949]     raise_(OutOfResources(self.metadata.shared, max_shared, \"shared memory\"))"
+ ]
+}
