@@ -43,6 +43,6 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
 
 **D-009 (2026-11-24): Capture runs pin the host's cp312 image and use fp16 on T4.**
 - The wheelhouse holds cp312 wheels. Kaggle's default image is Python 3.13, so the install failed (v1). The fix is pinning `gcr.io/kaggle-private-byod/python@sha256:37c64f7d…`, the image used by the host's notebook.
-- On T4 (compute capability 7.5), `dtype='auto'` resolves to the model's bf16, which vLLM refuses (v2). The fix is `dtype='half'` when bf16 isn't supported.
+- On T4 (compute capability 7.5), `dtype='auto'` resolves to the model's bf16, which vLLM refuses (v2). `torch.cuda.is_bf16_supported()` also returns True on T4 because it counts emulation (v3). The fix is to choose fp16 whenever compute capability is below 8.0.
 - fp16 numerical behaviour of Gemma 4 E4B is an open risk. The smoke gate aborts before any task if output is garbage.
 - E4B-on-T4 numbers are **fault-shape data**. They are not the scorer's 31B/L4/bf16 rates.

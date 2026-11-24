@@ -121,7 +121,8 @@ def main() -> int:
     capture = OUT / "capture.jsonl"
     os.environ["FIREBREAK_CAPTURE"] = str(capture)
     ngpu = torch.cuda.device_count()
-    bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
+    # torch.cuda.is_bf16_supported() is True on T4 (counts emulation); vLLM requires compute capability >= 8.0
+    bf16 = torch.cuda.is_available() and torch.cuda.get_device_capability(0)[0] >= 8
     cfg = VllmConfig(model=model_path, port=8000, host="127.0.0.1", tool_call_parser="gemma4", reasoning_parser="gemma4",
                      max_model_len=32768, dtype="bfloat16" if bf16 else "half", gpu_memory_utilization=0.90,  # T4: no bf16
                      enable_auto_tool_choice=True, enable_lora=False, scheduler_reserve_full_isl=False,
