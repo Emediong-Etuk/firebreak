@@ -1,0 +1,14 @@
+{
+ "description": "faithful template render of a scalar string that still mangles (content contains wire tokens)",
+ "target": "MANGLED",
+ "found": true,
+ "minimal_content": "}<tool_call|>",
+ "tool": "run_command",
+ "args": {
+  "command": "}<tool_call|>"
+ },
+ "text": "<|tool_call>call:run_command{command:<|\"|>}<tool_call|><|\"|>}<tool_call|>",
+ "outcome": "MANGLED",
+ "detail": "differs: command",
+ "command": "python -I wirelab/replay.py reproducers/faithful_scalar_mangled.json"
+}

@@ -1,0 +1,262 @@
+{
+ "rows": [
+  {
+   "code": "def f(a, b: List[int]) -> None:",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "def f(a, b: List[int]) -> None:",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "def f(a, b: List[int]) -> None:",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "def f(a, b: List[int]) -> None:",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "x = {\"k\": [1, 2]}",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "x = {\"k\": [1, 2]}",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "x = {\"k\": [1, 2]}",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "x = {\"k\": [1, 2]}",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "items = data[:2]",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "items = data[:2]",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "items = data[:2]",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "items = data[:2]",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "return {\"a\": [\"b\"], \"c\": 1}",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "return {\"a\": [\"b\"], \"c\": 1}",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "return {\"a\": [\"b\"], \"c\": 1}",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "return {\"a\": [\"b\"], \"c\": 1}",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "opts = {\"a\": 1, \"ids\": [\"x[0]\"]}",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "opts = {\"a\": 1, \"ids\": [\"x[0]\"]}",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "HANG"
+  },
+  {
+   "code": "opts = {\"a\": 1, \"ids\": [\"x[0]\"]}",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "opts = {\"a\": 1, \"ids\": [\"x[0]\"]}",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "HANG"
+  },
+  {
+   "code": "m = {\"k\": 1, \"types\": [\"List[int]\"]}",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "m = {\"k\": 1, \"types\": [\"List[int]\"]}",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "HANG"
+  },
+  {
+   "code": "m = {\"k\": 1, \"types\": [\"List[int]\"]}",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "m = {\"k\": 1, \"types\": [\"List[int]\"]}",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "HANG"
+  },
+  {
+   "code": "pytest.main([\"-q\", \"tests/t.py::test_a[case]\"])",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "pytest.main([\"-q\", \"tests/t.py::test_a[case]\"])",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "pytest.main([\"-q\", \"tests/t.py::test_a[case]\"])",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "pytest.main([\"-q\", \"tests/t.py::test_a[case]\"])",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "def f(a, b: list[str] = [\"x[1]\"]):",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "def f(a, b: list[str] = [\"x[1]\"]):",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "def f(a, b: list[str] = [\"x[1]\"]):",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "def f(a, b: list[str] = [\"x[1]\"]):",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "python -m pytest \"tests/test_x.py::test_a[case-1]\" -q",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "python -m pytest \"tests/test_x.py::test_a[case-1]\" -q",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "python -m pytest \"tests/test_x.py::test_a[case-1]\" -q",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "python -m pytest \"tests/test_x.py::test_a[case-1]\" -q",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "def f():\n    \"\"\"Doc.\"\"\"\n    return 1",
+   "tool": "run_command",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "def f():\n    \"\"\"Doc.\"\"\"\n    return 1",
+   "tool": "run_command",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  },
+  {
+   "code": "def f():\n    \"\"\"Doc.\"\"\"\n    return 1",
+   "tool": "edit_file",
+   "quoting": "marker",
+   "cls": "OK"
+  },
+  {
+   "code": "def f():\n    \"\"\"Doc.\"\"\"\n    return 1",
+   "tool": "edit_file",
+   "quoting": "plain",
+   "cls": "MANGLED"
+  }
+ ],
+ "summary": {
+  "marker": {
+   "OK": 20,
+   "MANGLED": 0,
+   "REJECTED": 0,
+   "HANG": 0
+  },
+  "plain": {
+   "OK": 0,
+   "MANGLED": 16,
+   "REJECTED": 0,
+   "HANG": 4
+  }
+ },
+ "hang_shapes_plain": [
+  "m = {\"k\": 1, \"types\": [\"List[int]\"]}",
+  "opts = {\"a\": 1, \"ids\": [\"x[0]\"]}"
+ ]
+}

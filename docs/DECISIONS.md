@@ -26,3 +26,17 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
 - ADK `run_skill_script` declares `args: anyOf[object, array<string>]` and `positional_args: array<string>`.
 - Adding *any* skill therefore exposes array-typed parameters to the model, which is exactly the F1 surface: one plain-quoted `]` in an array kills the scorer's server.
 - `firebreak-lite` ships **no skills**. Whether full Firebreak ships `safe_edit`/`airlock` as skills is decided by Wire Lab C3/C4 data on how often Gemma emits array args when they're optional. The alternative is to deliver the same behaviour through scalar-only harness tools.
+
+**D-007 (2026-11-24): No array params is necessary but not sufficient (F1b).**
+- Wire Lab shows every hang needs an array-valued argument *on the wire*. That's 1,274 of 1,279 C1 hangs with a declared array, and 0 of 52,329 faithful scalar-only calls.
+- But a model that **plain-quotes** a scalar string can still put an array on the wire. Realistic code reproduces it: a plain-quoted `run_command` containing `m = {"k": 1, "types": ["List[int]"]}` hangs the pinned parser (`evidence/wirelab/realistic_probes.json`). So does a string arg wrapped as `["test_x[case]"]`.
+- Consequences:
+  - D1 stays: never declare arrays.
+  - Prompt rules can't stop emission drift; only the model's training does. How often Gemma 4 31B plain-quotes is the decisive number, and it comes from C4 (captured completions, Phase 3).
+  - Skills stay out until C4 shows `run_skill_script` calls are emitted marker-quoted with no `args`/`positional_args`.
+
+**D-008 (2026-11-24): F2 is a model-side emission fault, not a parser bug.**
+- 1,153/1,153 faithful renders of all 129 gold fixes parse back exactly.
+- The reported signature (junk key `<|"|>,filepath`, *"mandatory input parameters are not present: filepath"*) reproduces only when the model emits a stray `<|"|>` next to a content quote. The shrunk minimal trigger is content `"`.
+- Exposure: 38 of 129 tasks need a triple-quoted argument, and 24 have an argument that ends in a quote.
+- The safe_edit escape alphabet targets exactly those quote runs. The scan of 195,270 files in all 129 snapshots found 0 `@@…@@` tokens, so the alphabet is collision-free.

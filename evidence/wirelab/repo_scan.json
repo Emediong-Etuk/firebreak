@@ -1,0 +1,12 @@
+{
+ "snapshots": 129,
+ "text_files": 195270,
+ "bytes": 1678509118,
+ "files_containing": {
+  "marker_<|\"|>": 0,
+  "tool_call_end": 0,
+  "tool_call_start": 0
+ },
+ "escape_like_tokens_@@X@@": {},
+ "note": "binary files (NUL in first 4 KiB) skipped; .git objects are compressed and therefore skipped as binary"
+}

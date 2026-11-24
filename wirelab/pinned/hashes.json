@@ -11,6 +11,8 @@
   "gemma4_parser_pinned.py": "8b2d7e651433104ade7decd453ccfe6e369b1830d61df30aae37b0ebc690b7ac",
   "_notes": {
     "vllm_wheel": "competition wheelhouse (metric/gemma-4-developer-agent-wheelhouse) and PyPI vllm==0.19.1 wheels differ in bytes but contain byte-identical gemma4 parser files",
-    "chat_template": "PENDING: Kaggle model files not yet downloaded"
-  }
+    "chat_template": "from Kaggle model google/gemma-4/Other/gemma-4-31b-it-qat-w4a16-ct/2 (Apache-2.0)"
+  },
+  "chat_template.jinja": "94899c0f917d93f6fe81c95744d1e8ddab2d21d39228d2e4aec1fb2a25bff413",
+  "abstract_tool_parser.py": "4a6ed7fa3dabb3318136251bd0bc95fa15407ef3089d9017391d5bd0aa9078ce"
 }

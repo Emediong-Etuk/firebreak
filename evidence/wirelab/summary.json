@@ -1,0 +1,222 @@
+{
+ "generated_utc": "2026-11-24T13:52:10Z",
+ "pinned_parser_sha256": "682b2152b76c031df9c58c3ffbb5b243945be5d8957ebdce00faef1b9de6b889",
+ "watchdog_s": 0.5,
+ "run": "full",
+ "corpora": {
+  "c1": {
+   "n": 100000,
+   "classes": {
+    "OK": 74292,
+    "MANGLED": 20526,
+    "DROPPED": 0,
+    "REJECTED": 3903,
+    "HANG": 1279,
+    "CRASH": 0
+   },
+   "fault_rate": 0.2571,
+   "by_mode": {
+    "faithful": {
+     "OK": 59839,
+     "REJECTED": 82,
+     "MANGLED": 128
+    },
+    "mixed": {
+     "OK": 9882,
+     "MANGLED": 8305,
+     "REJECTED": 1300,
+     "HANG": 438
+    },
+    "plain": {
+     "MANGLED": 12093,
+     "REJECTED": 2521,
+     "OK": 4571,
+     "HANG": 841
+    }
+   },
+   "top_signatures": [
+    [
+     "MANGLED: differs: skill_name",
+     2608
+    ],
+    [
+     "MANGLED: differs: filepath",
+     2222
+    ],
+    [
+     "MANGLED: differs: query",
+     2140
+    ],
+    [
+     "MANGLED: differs: command",
+     2100
+    ],
+    [
+     "MANGLED: differs: nodes",
+     1904
+    ],
+    [
+     "REJECTED: mandatory input parameters are not present: skill_name",
+     1282
+    ],
+    [
+     "HANG: None",
+     1279
+    ],
+    [
+     "MANGLED: differs: node",
+     1264
+    ]
+   ],
+   "arrays_vs_scalars": {
+    "with_array_arg": {
+     "OK": 8040,
+     "MANGLED": 3107,
+     "DROPPED": 0,
+     "REJECTED": 264,
+     "HANG": 1274,
+     "CRASH": 0
+    },
+    "scalar_only": {
+     "OK": 66252,
+     "MANGLED": 17419,
+     "DROPPED": 0,
+     "REJECTED": 3639,
+     "HANG": 5,
+     "CRASH": 0
+    }
+   },
+   "faithful_scalar_only": {
+    "OK": 52329,
+    "MANGLED": 108,
+    "DROPPED": 0,
+    "REJECTED": 66,
+    "HANG": 0,
+    "CRASH": 0
+   },
+   "seconds": 198.0
+  },
+  "c2": {
+   "n": 1153,
+   "classes": {
+    "OK": 1153,
+    "MANGLED": 0,
+    "DROPPED": 0,
+    "REJECTED": 0,
+    "HANG": 0,
+    "CRASH": 0
+   },
+   "fault_rate": 0.0,
+   "by_kind": {
+    "hunk": {
+     "OK": 646
+    },
+    "new_file": {
+     "OK": 49
+    },
+    "variant_heredoc": {
+     "OK": 229
+    },
+    "variant_write_file": {
+     "OK": 229
+    }
+   },
+   "top_signatures": [],
+   "tasks_with_any_fault": 0,
+   "seconds": 6.0
+  },
+  "c3": {
+   "n": 10292,
+   "classes": {
+    "OK": 2318,
+    "MANGLED": 5542,
+    "DROPPED": 0,
+    "REJECTED": 1752,
+    "HANG": 680,
+    "CRASH": 0
+   },
+   "fault_rate": 0.7748,
+   "by_op": {
+    "backslash_quotes": {
+     "MANGLED": 740
+    },
+    "crlf": {
+     "MANGLED": 1036
+    },
+    "doubled_close": {
+     "REJECTED": 25,
+     "OK": 12
+    },
+    "doubled_close_schema_order": {
+     "REJECTED": 37
+    },
+    "early_close_at_tq": {
+     "MANGLED": 220,
+     "REJECTED": 151
+    },
+    "json_escaped_all": {
+     "MANGLED": 613,
+     "REJECTED": 540
+    },
+    "missing_close": {
+     "OK": 1153
+    },
+    "one_item_array": {
+     "MANGLED": 1153
+    },
+    "one_item_array_plain": {
+     "HANG": 680,
+     "MANGLED": 468,
+     "REJECTED": 5
+    },
+    "plain_all": {
+     "MANGLED": 613,
+     "REJECTED": 540
+    },
+    "plain_one": {
+     "MANGLED": 699,
+     "REJECTED": 454
+    },
+    "stray_bracket": {
+     "OK": 1153
+    }
+   },
+   "top_signatures": [
+    [
+     "REJECTED: mandatory input parameters are not present: old_string",
+     1046
+    ],
+    [
+     "MANGLED: differs: new_string",
+     997
+    ],
+    [
+     "MANGLED: differs: content",
+     829
+    ],
+    [
+     "MANGLED: differs: command",
+     732
+    ],
+    [
+     "REJECTED: mandatory input parameters are not present: filepath",
+     706
+    ],
+    [
+     "HANG: None",
+     680
+    ],
+    [
+     "MANGLED: differs: new_string,old_string",
+     541
+    ],
+    [
+     "MANGLED: differs: old_string",
+     468
+    ]
+   ],
+   "tasks_with_any_fault": 129,
+   "seconds": 108.7
+  }
+ }
+}

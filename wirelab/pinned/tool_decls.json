@@ -1,0 +1,113 @@
+{
+ "edit_file": {
+  "mandatory": [
+   "filepath",
+   "old_string",
+   "new_string"
+  ],
+  "params": [
+   "filepath",
+   "old_string",
+   "new_string",
+   "allow_multiple"
+  ]
+ },
+ "get_code_neighbors": {
+  "mandatory": [
+   "node"
+  ],
+  "params": [
+   "node",
+   "edge_type",
+   "max_neighbors"
+  ]
+ },
+ "get_code_subgraph": {
+  "mandatory": [
+   "nodes"
+  ],
+  "params": [
+   "nodes"
+  ]
+ },
+ "get_status": {
+  "mandatory": [],
+  "params": []
+ },
+ "list_skills": {
+  "mandatory": [],
+  "params": []
+ },
+ "load_skill": {
+  "mandatory": [
+   "skill_name"
+  ],
+  "params": [
+   "skill_name"
+  ]
+ },
+ "load_skill_resource": {
+  "mandatory": [
+   "skill_name",
+   "file_path"
+  ],
+  "params": [
+   "skill_name",
+   "file_path"
+  ]
+ },
+ "read_file": {
+  "mandatory": [
+   "filepath"
+  ],
+  "params": [
+   "filepath",
+   "start_line",
+   "end_line"
+  ]
+ },
+ "run_command": {
+  "mandatory": [
+   "command"
+  ],
+  "params": [
+   "command"
+  ]
+ },
+ "run_skill_script": {
+  "mandatory": [
+   "skill_name",
+   "file_path"
+  ],
+  "params": [
+   "skill_name",
+   "file_path",
+   "args",
+   "short_options",
+   "positional_args"
+  ]
+ },
+ "search_similar_code": {
+  "mandatory": [
+   "query"
+  ],
+  "params": [
+   "query",
+   "k"
+  ]
+ },
+ "submit_patch": {
+  "mandatory": [],
+  "params": []
+ },
+ "write_file": {
+  "mandatory": [
+   "filepath",
+   "content"
+  ],
+  "params": [
+   "filepath",
+   "content"
+  ]
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "description": "F1 with NO array params declared: model wraps a string arg as [\"...\"]",
+ "target": "HANG",
+ "found": true,
+ "minimal_content": "test_x[case]",
+ "tool": "run_command",
+ "args": {
+  "command": "test_x[case]"
+ },
+ "text": "<|tool_call>call:run_command{command:[\"test_x[case]\"]}<tool_call|>",
+ "outcome": "HANG",
+ "detail": "None",
+ "command": "python -I wirelab/replay.py reproducers/hang_scalar_wrapped_in_plain_array.json"
+}

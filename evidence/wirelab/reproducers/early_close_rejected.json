@@ -1,0 +1,16 @@
+{
+ "description": "F2: marker used as a content quote inside edit_file, schema order -> mandatory param lost",
+ "target": "REJECTED",
+ "found": true,
+ "minimal_content": "\"",
+ "tool": "edit_file",
+ "args": {
+  "filepath": "a.py",
+  "old_string": "\"",
+  "new_string": "x"
+ },
+ "text": "<|tool_call>call:edit_file{old_string:<|\"|>\"<|\"|><|\"|>,filepath:<|\"|>a.py<|\"|>,new_string:<|\"|>x<|\"|>}<tool_call|>",
+ "outcome": "REJECTED",
+ "detail": "mandatory input parameters are not present: filepath",
+ "command": "python -I wirelab/replay.py reproducers/early_close_rejected.json"
+}

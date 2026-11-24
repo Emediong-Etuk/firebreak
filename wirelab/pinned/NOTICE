@@ -3,3 +3,7 @@ are copied unmodified from vLLM 0.19.1 (https://github.com/vllm-project/vllm),
 Copyright contributors to the vLLM project, licensed under the Apache License, Version 2.0
 (http://www.apache.org/licenses/LICENSE-2.0). They are vendored solely to reproduce and test
 parser behaviour; Firebreak does not modify or redistribute vLLM itself.
+
+chat_template.jinja is copied unmodified from the Kaggle model
+google/gemma-4/Other/gemma-4-31b-it-qat-w4a16-ct/2 (Google DeepMind), licensed under the
+Apache License, Version 2.0 (https://ai.google.dev/gemma/docs/gemma_4_license).

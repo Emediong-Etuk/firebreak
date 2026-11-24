@@ -1,0 +1,13 @@
+{
+ "tasks": 129,
+ "tasks_ok": 129,
+ "calls": 1153,
+ "by_kind": {
+  "new_file": 49,
+  "hunk": 646,
+  "variant_write_file": 229,
+  "variant_heredoc": 229
+ },
+ "failures": [],
+ "notes": []
+}

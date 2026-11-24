@@ -1,0 +1,16 @@
+{
+ "description": "plain-quoted content arg whose text swallows the following mandatory key",
+ "target": "REJECTED",
+ "found": true,
+ "minimal_content": "]",
+ "tool": "edit_file",
+ "args": {
+  "filepath": "a.py",
+  "old_string": "]",
+  "new_string": "x"
+ },
+ "text": "<|tool_call>call:edit_file{new_string:\"x\",old_string:\"]\",filepath:\"a.py\"}<tool_call|>",
+ "outcome": "REJECTED",
+ "detail": "mandatory input parameters are not present: filepath",
+ "command": "python -I wirelab/replay.py reproducers/plain_scalar_rejected.json"
+}

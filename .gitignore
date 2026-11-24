@@ -19,3 +19,6 @@ site/node_modules/
 site/.next/
 site/out/
 evalkit/submit_notebook/out/
+# regenerable corpora (see Makefile: gold, wirelab-full)
+wirelab/corpora/*/cases.jsonl
+wirelab/corpora/*/calls.jsonl

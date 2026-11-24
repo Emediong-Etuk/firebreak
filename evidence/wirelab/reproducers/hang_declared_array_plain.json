@@ -1,0 +1,16 @@
+{
+ "description": "F1 via a declared array param (get_code_subgraph.nodes) emitted with plain quotes",
+ "target": "HANG",
+ "found": true,
+ "minimal_content": "test_x[case]",
+ "tool": "get_code_subgraph",
+ "args": {
+  "nodes": [
+   "test_x[case]"
+  ]
+ },
+ "text": "<|tool_call>call:get_code_subgraph{nodes:[\"test_x[case]\"]}<tool_call|>",
+ "outcome": "HANG",
+ "detail": "None",
+ "command": "python -I wirelab/replay.py reproducers/hang_declared_array_plain.json"
+}
