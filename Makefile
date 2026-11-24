@@ -22,3 +22,12 @@ wirelab-full:   ## C1 100k + C2 + C3, then shrink, probes, F2 report, differenti
 	$(HPY) -I wirelab/probes.py
 	$(HPY) -I wirelab/report_f2.py
 	$(HPY) -I wirelab/differential.py --corpora c1,c2,c3
+
+.PHONY: verify-lite verify
+LITE ?= .venv-lite/bin/python
+.venv-lite/bin/python:
+	python3 -m venv .venv-lite && .venv-lite/bin/pip install -q regex==2025.11.3 hypothesis==6.148.7 jinja2==3.1.6 pytest==8.4.2
+verify-lite: .venv-lite/bin/python   ## CPU only, no Kaggle account
+	$(LITE) -I verify/verify.py lite
+verify:          ## needs competition data in data/ (tools/fetch_data.sh + tools/stream_snapshots.py)
+	$(HPY) -I verify/verify.py full

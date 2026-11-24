@@ -22,8 +22,16 @@
 - C2 gold replay: all 129 gold patches rebuilt as minimal-anchor tool calls (1,153 calls), which replay byte-exact and parse 100% OK on the pinned wire.
 - C1 fuzz: 100k seeded cases. C3: 12 deviation operators × gold calls = 10,292 cases. Shrunk reproducers are in `reproducers/`.
 - Repo scan: 0 wire tokens and 0 `@@…@@` tokens across 195,270 files.
-- Vendored vs real parser differential: 600/600 identical on a sample; the full 111k run is in progress.
+- Vendored vs real parser differential: **111,445/111,445 identical** (C1+C2+C3, hang behaviour included).
+
+## Phase 2 (built)
+- `safe-edit` skill: expressibility **129/129** host-side (1,987 commands). C5: **4,669/4,669 OK** on the wire.
+- `airlock` skill. 37 unit/property tests.
+- `make verify-lite` passes from a fresh venv in about 1.5 min (no Kaggle account).
+- Firebreak v1 candidate in `submission/` uses skills. The audit flags `run_skill_script` arrays, so shipping it is gated on C4.
+
+## Running
+- E4B T4×2 capture notebook `emediongetuk/firebreak-capture` v4: A=sample vs B=firebreak-lite, 40 tasks.
 
 ## Next
-- Phase 2: the safe_edit protocol, which must work without skills (D-007), the airlock, and C5.
 - Phase 3 (needs a GPU OK): capture real completions (C4). This decides how often Gemma plain-quotes.

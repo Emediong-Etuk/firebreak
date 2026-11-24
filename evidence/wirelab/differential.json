@@ -1,10 +1,11 @@
 {
- "cases": 600,
- "identical": 600,
+ "cases": 111445,
+ "identical": 111445,
  "mismatches": [],
  "per_corpus": {
-  "c2": 300,
-  "c3": 300
+  "c1": 100000,
+  "c2": 1153,
+  "c3": 10292
  },
  "identical_rate": 1.0,
  "method": "real = unmodified pinned gemma4_tool_parser.py executed with vLLM type/logger imports stubbed"

@@ -23,3 +23,4 @@ evalkit/submit_notebook/out/
 wirelab/corpora/*/cases.jsonl
 wirelab/corpora/*/calls.jsonl
 evalkit/notebook/out/
+.cache/
