@@ -1,0 +1,5 @@
+Files in this directory named gemma4_*.py.orig, and the function bodies in gemma4_parser_pinned.py,
+are copied unmodified from vLLM 0.19.1 (https://github.com/vllm-project/vllm),
+Copyright contributors to the vLLM project, licensed under the Apache License, Version 2.0
+(http://www.apache.org/licenses/LICENSE-2.0). They are vendored solely to reproduce and test
+parser behaviour; Firebreak does not modify or redistribute vLLM itself.

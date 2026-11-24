@@ -1,0 +1,428 @@
+{
+  "fault": "F1",
+  "reproduced": true,
+  "watchdog_s": 3.0,
+  "pinned": {
+    "vllm_wheel_competition": "73c69bafca24fbdad44690c44d6c6446514351e6f3cc9a6057cba05e66051310",
+    "gemma4_tool_parser.py": "682b2152b76c031df9c58c3ffbb5b243945be5d8957ebdce00faef1b9de6b889"
+  },
+  "host": {
+    "python": "3.13.18",
+    "machine": "x86_64"
+  },
+  "probes": [
+    {
+      "outcome": "OK",
+      "detail": "['--detail', 'List[int]']",
+      "elapsed_s": 0.104,
+      "rss_growth_mb_per_s": null,
+      "rss_samples_kb": [
+        [
+          0.0,
+          11040
+        ]
+      ],
+      "id": "array_marker_quoted",
+      "function": "_parse_gemma4_array",
+      "input": "<|\"|>--detail<|\"|>, <|\"|>List[int]<|\"|>",
+      "description": "marker-quoted items (the form the chat template teaches): control"
+    },
+    {
+      "outcome": "HANG",
+      "detail": "killed by watchdog after 3.01s",
+      "elapsed_s": 3.012,
+      "rss_growth_mb_per_s": 26.2,
+      "rss_samples_kb": [
+        [
+          0.0,
+          12044
+        ],
+        [
+          0.1,
+          20044
+        ],
+        [
+          0.2,
+          22624
+        ],
+        [
+          0.3,
+          25388
+        ],
+        [
+          0.4,
+          27900
+        ],
+        [
+          0.5,
+          30472
+        ],
+        [
+          0.6,
+          33220
+        ],
+        [
+          0.7,
+          35924
+        ],
+        [
+          0.8,
+          38596
+        ],
+        [
+          0.9,
+          41240
+        ],
+        [
+          1.01,
+          44096
+        ],
+        [
+          1.11,
+          46836
+        ],
+        [
+          1.21,
+          49532
+        ],
+        [
+          1.31,
+          52180
+        ],
+        [
+          1.41,
+          54980
+        ],
+        [
+          1.51,
+          57560
+        ],
+        [
+          1.61,
+          60300
+        ],
+        [
+          1.71,
+          63048
+        ],
+        [
+          1.81,
+          65900
+        ],
+        [
+          1.91,
+          68784
+        ],
+        [
+          2.01,
+          71612
+        ],
+        [
+          2.11,
+          74436
+        ],
+        [
+          2.21,
+          77220
+        ],
+        [
+          2.31,
+          79792
+        ],
+        [
+          2.41,
+          82072
+        ],
+        [
+          2.51,
+          84848
+        ],
+        [
+          2.61,
+          87540
+        ],
+        [
+          2.71,
+          90212
+        ],
+        [
+          2.81,
+          92932
+        ],
+        [
+          2.91,
+          95464
+        ]
+      ],
+      "id": "array_plain_quoted",
+      "function": "_parse_gemma4_array",
+      "input": "\"--detail\", \"List[int]\"",
+      "description": "plain-quoted items with a bracket inside a string: the reported F1 input"
+    },
+    {
+      "outcome": "HANG",
+      "detail": "killed by watchdog after 3.01s",
+      "elapsed_s": 3.012,
+      "rss_growth_mb_per_s": 24.6,
+      "rss_samples_kb": [
+        [
+          0.0,
+          11988
+        ],
+        [
+          0.1,
+          20732
+        ],
+        [
+          0.2,
+          23728
+        ],
+        [
+          0.3,
+          26568
+        ],
+        [
+          0.4,
+          29428
+        ],
+        [
+          0.5,
+          32304
+        ],
+        [
+          0.6,
+          35300
+        ],
+        [
+          0.7,
+          38112
+        ],
+        [
+          0.8,
+          40464
+        ],
+        [
+          0.9,
+          42400
+        ],
+        [
+          1.0,
+          44816
+        ],
+        [
+          1.1,
+          47440
+        ],
+        [
+          1.21,
+          50172
+        ],
+        [
+          1.31,
+          52768
+        ],
+        [
+          1.41,
+          55064
+        ],
+        [
+          1.51,
+          57644
+        ],
+        [
+          1.61,
+          60008
+        ],
+        [
+          1.71,
+          62588
+        ],
+        [
+          1.81,
+          65164
+        ],
+        [
+          1.91,
+          67656
+        ],
+        [
+          2.01,
+          69828
+        ],
+        [
+          2.11,
+          71648
+        ],
+        [
+          2.21,
+          74112
+        ],
+        [
+          2.31,
+          76008
+        ],
+        [
+          2.41,
+          78612
+        ],
+        [
+          2.51,
+          80736
+        ],
+        [
+          2.61,
+          83552
+        ],
+        [
+          2.71,
+          86380
+        ],
+        [
+          2.81,
+          89148
+        ],
+        [
+          2.91,
+          91932
+        ]
+      ],
+      "id": "array_plain_bracket_min",
+      "function": "_parse_gemma4_array",
+      "input": "\"a]\"",
+      "description": "minimal: one plain-quoted item containing a closing bracket"
+    },
+    {
+      "outcome": "HANG",
+      "detail": "killed by watchdog after 3.02s",
+      "elapsed_s": 3.016,
+      "rss_growth_mb_per_s": 26.1,
+      "rss_samples_kb": [
+        [
+          0.0,
+          11992
+        ],
+        [
+          0.1,
+          20644
+        ],
+        [
+          0.2,
+          23220
+        ],
+        [
+          0.3,
+          26012
+        ],
+        [
+          0.4,
+          28760
+        ],
+        [
+          0.5,
+          30732
+        ],
+        [
+          0.6,
+          33588
+        ],
+        [
+          0.7,
+          36504
+        ],
+        [
+          0.8,
+          39312
+        ],
+        [
+          0.9,
+          41704
+        ],
+        [
+          1.0,
+          44560
+        ],
+        [
+          1.1,
+          47216
+        ],
+        [
+          1.2,
+          49660
+        ],
+        [
+          1.31,
+          52252
+        ],
+        [
+          1.41,
+          54872
+        ],
+        [
+          1.51,
+          57340
+        ],
+        [
+          1.61,
+          59900
+        ],
+        [
+          1.71,
+          62044
+        ],
+        [
+          1.81,
+          64676
+        ],
+        [
+          1.91,
+          67452
+        ],
+        [
+          2.01,
+          70132
+        ],
+        [
+          2.11,
+          73056
+        ],
+        [
+          2.21,
+          75872
+        ],
+        [
+          2.31,
+          78800
+        ],
+        [
+          2.41,
+          81612
+        ],
+        [
+          2.51,
+          84472
+        ],
+        [
+          2.61,
+          87264
+        ],
+        [
+          2.71,
+          90340
+        ],
+        [
+          2.81,
+          93144
+        ],
+        [
+          2.92,
+          95968
+        ]
+      ],
+      "id": "extract_full_call",
+      "function": "extract_tool_calls",
+      "input": "<|tool_call>call:get_code_subgraph{nodes:[\"rich.pretty.Node\", \"List[int]\"]}<tool_call|>",
+      "description": "end-to-end: non-streaming extract_tool_calls on a full model completion"
+    }
+  ],
+  "command": "python -I wirelab/repro_f1.py"
+}

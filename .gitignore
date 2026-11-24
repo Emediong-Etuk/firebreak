@@ -1,0 +1,21 @@
+# secrets — never commit
+.kaggle/
+kaggle.json
+access_token*
+*.env
+.env*
+# competition data (licensed; download via tools/fetch_data.sh)
+data/
+# python
+__pycache__/
+*.pyc
+.venv*/
+.hypothesis/
+.pytest_cache/
+# build outputs
+dist/*
+!dist/*.zip
+site/node_modules/
+site/.next/
+site/out/
+evalkit/submit_notebook/out/

@@ -1,0 +1,16 @@
+{
+  "vllm_wheel_competition": "73c69bafca24fbdad44690c44d6c6446514351e6f3cc9a6057cba05e66051310",
+  "vllm_wheel_pypi": "71a87f46cafab4489c69a5c5c83b870d0235e5694d8222303d460576293dc719",
+  "gemma4_tool_parser.py": "682b2152b76c031df9c58c3ffbb5b243945be5d8957ebdce00faef1b9de6b889",
+  "gemma4_utils.py": "be0bd9606566986343c1ec0cf9c6ed9a646314b999c7c359a4977df0a014392d",
+  "vllm/entrypoints/openai/engine/serving.py": "4cc5381ad3c25e5ef9c09d69b4cbd4d9a4a49d33bdb961e9b67241b1b28050c2",
+  "swegemma_wheel": "9ad876581f3acde8ec3c369858f0834e2b9f41a3cffce3ca42f09cb090aea9d3",
+  "adk_submission_wheel": "f156f0bd84580ccb9334726d114d7a5481f16d3a6e2887cc4d276ced0ef8d99d",
+  "adk_eval_core_wheel": "e614e1b2fe8d886a634871e4c57f9887e1cc66e8c27300f8503a43c6e3ca82f3",
+  "google_adk_wheel": "1a2f6868c509e3151fb0de3575a7d18b45c338be86f420924dad74e7193631a0",
+  "gemma4_parser_pinned.py": "8b2d7e651433104ade7decd453ccfe6e369b1830d61df30aae37b0ebc690b7ac",
+  "_notes": {
+    "vllm_wheel": "competition wheelhouse (metric/gemma-4-developer-agent-wheelhouse) and PyPI vllm==0.19.1 wheels differ in bytes but contain byte-identical gemma4 parser files",
+    "chat_template": "PENDING: Kaggle model files not yet downloaded"
+  }
+}

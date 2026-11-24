@@ -1,0 +1,162 @@
+{
+  "agents": [
+    {
+      "class": "LlmAgent",
+      "instruction_chars": 4813,
+      "model": "openai/gemma-4-31b-it-qat-w4a16-ct",
+      "name": "firebreak_agent",
+      "tools": [
+        {
+          "array_paths": [],
+          "name": "run_command",
+          "parameters": {
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "read_file",
+          "parameters": {
+            "properties": {
+              "end_line": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "filepath": {
+                "type": "string"
+              },
+              "start_line": {
+                "nullable": true,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "filepath"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "edit_file",
+          "parameters": {
+            "properties": {
+              "allow_multiple": {
+                "default": false,
+                "type": "boolean"
+              },
+              "filepath": {
+                "type": "string"
+              },
+              "new_string": {
+                "type": "string"
+              },
+              "old_string": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "filepath",
+              "old_string",
+              "new_string"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "write_file",
+          "parameters": {
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "filepath": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "filepath",
+              "content"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "get_status",
+          "parameters": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "submit_patch",
+          "parameters": {
+            "properties": {},
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "get_code_neighbors",
+          "parameters": {
+            "properties": {
+              "edge_type": {
+                "nullable": true,
+                "type": "string"
+              },
+              "max_neighbors": {
+                "default": 50,
+                "type": "integer"
+              },
+              "node": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "node"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "array_paths": [],
+          "name": "search_similar_code",
+          "parameters": {
+            "properties": {
+              "k": {
+                "default": 10,
+                "type": "integer"
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "type": "object"
+          }
+        }
+      ]
+    }
+  ],
+  "allowed_array_exceptions": [],
+  "declared_models": [
+    "gemma-4-31b-it-qat-w4a16-ct"
+  ],
+  "failures": [],
+  "ok": true,
+  "submission": "submission",
+  "unpacked_bytes": 5415
+}
