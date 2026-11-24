@@ -22,3 +22,4 @@ evalkit/submit_notebook/out/
 # regenerable corpora (see Makefile: gold, wirelab-full)
 wirelab/corpora/*/cases.jsonl
 wirelab/corpora/*/calls.jsonl
+evalkit/notebook/out/
