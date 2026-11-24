@@ -73,6 +73,37 @@ def value_styles(args: str) -> list[tuple[str, str]]:
     return out
 
 
+REJECT_MARKERS = ("mandatory input parameters are not present", "is not found", "not found in", "INVALID_ARGUMENTS")
+
+
+def trace_metrics(path: Path) -> dict:
+    """Per-task metrics from a swegemma SessionTrace (ATIF json)."""
+    from adk_eval_core.tracing.trace import SessionTrace
+    tr = SessionTrace.from_json(path)
+    calls, by_tool, errors, rejected = [], collections.Counter(), 0, 0
+    pending = []
+    for e in tr.entries:
+        if e.event_type == "tool_call":
+            by_tool[e.tool_name] += 1
+            pending.append((e.tool_name, json.dumps(e.tool_args or {}, sort_keys=True)))
+        elif e.event_type == "tool_response":
+            res = e.tool_result or ""
+            call = pending.pop(0) if pending else (e.tool_name, "")
+            is_rej = any(m in res for m in REJECT_MARKERS)
+            is_err = is_rej or '"status": "error"' in res or "'status': 'error'" in res
+            errors += is_err; rejected += is_rej
+            calls.append((call, is_err, is_rej))
+    # longest run of identical consecutive calls that each failed (retry storm)
+    best = run = 0
+    prev = None
+    for call, is_err, _ in calls:
+        run = run + 1 if (is_err and call == prev) else (1 if is_err else 0)
+        best = max(best, run)
+        prev = call if is_err else None
+    return {"tool_calls_by_type": dict(by_tool), "tool_errors": errors, "rejected_calls": rejected,
+            "max_identical_failed_retry_run": best}
+
+
 def main() -> int:
     out_dir, name = Path(sys.argv[1]), sys.argv[2]
     ev = ROOT / "evidence" / "runs" / name
@@ -82,7 +113,14 @@ def main() -> int:
     jobs = []
     for arm_dir in sorted((out_dir / "tasks").glob("*")):
         for f in arm_dir.glob("*.json"):
-            r = json.loads(f.read_text()); r["arm"] = arm_dir.name; jobs.append(r)
+            r = json.loads(f.read_text()); r["arm"] = arm_dir.name
+            tp = next((arm_dir / "_swegemma").rglob(f"trace_{r['instance_id']}.json"), None) if (arm_dir / "_swegemma").exists() else None
+            if tp is not None:
+                try:
+                    r["trace"] = trace_metrics(tp)
+                except Exception as e:  # noqa: BLE001
+                    r["trace"] = {"error": f"{type(e).__name__}: {e}"}
+            jobs.append(r)
 
     def task_of(hint: str | None) -> str | None:
         if not hint:
@@ -164,6 +202,12 @@ def main() -> int:
             "resolved_scorer_equivalent": sum(bool(j.get("resolved")) for j in js if j not in killed),
             "tasks_in_flight_at_fatal": len(killed),
             "mean_tool_calls": round(sum(j.get("tool_calls") or 0 for j in js) / max(1, len(js)), 2),
+            "trace_rejected_calls": sum((j.get("trace") or {}).get("rejected_calls", 0) for j in js),
+            "trace_tool_errors": sum((j.get("trace") or {}).get("tool_errors", 0) for j in js),
+            "tasks_with_retry_storm_ge3": sum(1 for j in js if (j.get("trace") or {}).get("max_identical_failed_retry_run", 0) >= 3),
+            "skill_or_subagent_calls": dict(sum((collections.Counter({k: v for k, v in (j.get("trace") or {}).get("tool_calls_by_type", {}).items()
+                                                   if k in ("run_skill_script", "load_skill", "code_analyzer_agent", "get_code_subgraph")})
+                                                   for j in js), collections.Counter())),
             "submitted_nonempty_patch": sum(1 for j in js if (j.get("agent_patch") or "").strip()),
             "wire": dict(st),
             "plain_quote_rate": round(st["value_plain"] / vals, 4) if vals else None,
@@ -174,6 +218,10 @@ def main() -> int:
     summary["fatal_examples"] = [{"array_input": f["array_input"][:300], "hint": (f.get("session_hint") or "")[:80]}
                                  for f in fatals[:5]]
     (ev / "summary.json").write_text(json.dumps(summary, indent=1, default=str) + "\n")
+    with (ev / "tasks.jsonl").open("w") as f:
+        for j in sorted(jobs, key=lambda j: (j["arm"], j["instance_id"])):
+            f.write(json.dumps({k: j.get(k) for k in ("arm", "instance_id", "resolved", "tool_calls", "duration_seconds",
+                                                      "error", "runner_error", "t_start", "t_end", "trace")}, default=str) + "\n")
     with gzip.GzipFile(ev / "c4_calls.jsonl.gz", "wb", mtime=0) as g:
         for c in c4:
             g.write((json.dumps(c, ensure_ascii=False) + "\n").encode())
