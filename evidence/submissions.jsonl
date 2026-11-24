@@ -1,1 +1,2 @@
 {"config_summary": "firebreak-lite: 31B, single agent, no subgraph/sub-agent/adapters, Phase-0 wire rules, 6min/40 calls", "event": "prepare", "git_sha": "b51cc4d696b8daf4c41708070844bc13316e13b3", "n": 1, "sha256": "aedd66784812e6bd4aa9fb23a40ed4a3ae8713f3f541db37c76ccd9158502472", "status": "prepared", "utc": "2026-11-24T13:30:11Z", "zip": "firebreak-lite.zip"}
+{"event": "submitted", "n": 1, "ref": "58832270 (kernel emediongetuk/firebreak-submit v1, submitted 2026-11-24 13:32:33 UTC)", "status": "submitted", "utc": "2026-11-24T13:32:43Z"}

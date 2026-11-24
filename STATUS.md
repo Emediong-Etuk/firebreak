@@ -10,9 +10,11 @@
 - firebreak-lite: compiled with the official compiler, **0 array params** exposed. The zip is byte-reproducible, sha256 `aedd6678…2472`.
 - CPU-only submission notebook generator: `evalkit/submit_notebook/build.py`.
 
+## Submissions
+- **#1 firebreak-lite**: ref `58832270`, submitted 2026-11-24 13:32 UTC from private CPU notebook `emediongetuk/firebreak-submit` v1. Status PENDING (expect a score in 20–29 h). Tag `sub-1-b51cc4d6`.
+
 ## Blocked / needs Greg
-1. Greg's **Kaggle username** (for the notebook id `<username>/firebreak-submit`).
-2. **OK to push the private CPU notebook and submit firebreak-lite** as submission #1. It uses no GPU quota.
+- Nothing right now. The next submission slot opens 2026-11-25.
 
 ## Next
 - Phase 1: chat template, renderer, C1 fuzz, C2 gold replay (needs snapshots, ~? GB), and the F2 verdict.
