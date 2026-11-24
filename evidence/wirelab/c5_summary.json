@@ -1,0 +1,10 @@
+{
+ "calls": 4669,
+ "classes": {
+  "OK": 4669
+ },
+ "ok_rate": 1.0,
+ "f2_trigger_shapes_in_args": {},
+ "non_ok_examples": [],
+ "note": "faithful render of every call the safe_edit protocol needs for all 129 gold fixes"
+}

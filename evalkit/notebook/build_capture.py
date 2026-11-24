@@ -14,7 +14,7 @@ ds = OUTD / "dataset"; ds.mkdir(parents=True)
 for f in ("run_slice.py", "run_task.py", "capture_shim.py", "guarded_parse.py"):
     shutil.copy(ROOT / "evalkit" / f, ds / f)
 shutil.copy(ROOT / "evalkit/slices/slice40.json", ds / "slice40.json")
-subprocess.run([sys.executable, "-I", str(ROOT / "verify/build_zip.py"), str(ROOT / "submission"), str(ds / "firebreak-lite.zip.bin")], check=True)
+subprocess.run([sys.executable, "-I", str(ROOT / "verify/build_zip.py"), str(ROOT / "variants/firebreak-lite"), str(ds / "firebreak-lite.zip.bin")], check=True)
 (ds / "dataset-metadata.json").write_text(json.dumps({"title": "firebreak-evalkit", "id": f"{a.owner}/firebreak-evalkit",
                                                        "licenses": [{"name": "apache-2.0"}]}, indent=1))
 code = f'''import glob, shutil, subprocess, sys, zipfile
