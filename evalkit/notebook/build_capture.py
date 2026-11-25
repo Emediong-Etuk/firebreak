@@ -51,6 +51,9 @@ FILE_DESC = {
         "clock and fails fast if the model server dies.\n\n"
         "Source, evidence and decisions live in the Firebreak repository. Apache-2.0."),
     "licenses": [{"name": "apache-2.0"}],
+    # only tags from Kaggle's fixed list are accepted; one invalid tag drops all of them
+    "keywords": ["artificial intelligence", "computer science", "programming", "software", "nlp",
+                 "deep learning", "gpu", "python", "text generation"],
     "expectedUpdateFrequency": "never",
     "resources": [{"path": f, "description": d} for f, d in FILE_DESC.items()],
 }, indent=1))

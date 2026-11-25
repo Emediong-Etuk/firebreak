@@ -1,0 +1,102 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Firebreak eval kit cover</title>
+<style>
+  :root{
+    --bg:#0f1114; --bg2:#151a20; --ink:#eef1f4; --muted:#93a0ad; --line:#26303a;
+    --ember:#ff7a3d; --ember2:#ffb15c; --hot:#ff4d4d; --ok:#5fd3a3; --mono:"DejaVu Sans Mono", monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1600px;height:800px;background:var(--bg);overflow:hidden}
+  body{font-family:"Inter", "DejaVu Sans", sans-serif;color:var(--ink);position:relative}
+  .glow{position:absolute;inset:0;
+    background:radial-gradient(900px 520px at 18% 62%, rgba(255,122,61,.20), transparent 70%),
+               radial-gradient(700px 460px at 92% 30%, rgba(95,211,163,.10), transparent 70%),
+               linear-gradient(180deg,var(--bg2),var(--bg));}
+  /* the wire: streams of tool calls flowing right, stopped at the break */
+  .stream{position:absolute;left:0;top:96px;width:1600px;height:612px}
+  .clipL{position:absolute;left:0;top:0;width:1030px;height:100%;overflow:hidden}
+  .clipR{position:absolute;left:1078px;top:0;right:0;height:100%;overflow:hidden}
+  .row{position:absolute;left:0;height:34px;display:flex;align-items:center;font:500 19px/1 var(--mono);white-space:nowrap}
+  .burn{color:rgba(255,177,92,.55)}
+  .burn b{color:var(--ember);font-weight:600}
+  .burn i{font-style:normal;color:var(--hot);font-weight:700}
+  .calm{color:rgba(95,211,163,.55)}
+  .calm b{color:var(--ok);font-weight:600}
+  /* the firebreak: a clean vertical gap */
+  .break{position:absolute;top:0;bottom:0;left:1010px;width:88px;
+    background:linear-gradient(90deg, rgba(15,17,20,0), var(--bg) 28%, var(--bg) 72%, rgba(15,17,20,0));}
+  .break::before,.break::after{content:"";position:absolute;top:70px;bottom:70px;width:2px;border-radius:2px}
+  .break::before{left:22px;background:linear-gradient(180deg,transparent,var(--ember),transparent);opacity:.9}
+  .break::after{right:22px;background:linear-gradient(180deg,transparent,var(--ok),transparent);opacity:.7}
+  /* title block */
+  .title{position:absolute;left:104px;top:116px;width:820px}
+  .kicker{font:600 22px/1 "Inter";letter-spacing:.18em;text-transform:uppercase;color:var(--ember2)}
+  h1{font:800 132px/0.95 "Inter Display","Inter";letter-spacing:-.035em;margin-top:22px}
+  h1 span{background:linear-gradient(90deg,var(--ember2),var(--ember) 55%,var(--hot));-webkit-background-clip:text;color:transparent}
+  .sub{font:500 34px/1.25 "Inter";color:var(--ink);margin-top:26px;max-width:780px}
+  .sub em{font-style:normal;color:var(--muted)}
+  .panel{position:absolute;left:62px;top:72px;width:900px;height:656px;border-radius:28px;
+    background:linear-gradient(180deg,rgba(15,17,20,.95),rgba(15,17,20,.90));border:1px solid var(--line);
+    box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  .chips{position:absolute;left:104px;bottom:150px;display:flex;gap:14px}
+  .chip{font:600 21px/1 "Inter";padding:14px 18px;border-radius:999px;border:1px solid var(--line);
+    background:rgba(255,255,255,.035);color:var(--ink);display:flex;gap:10px;align-items:baseline}
+  .chip .n{font:700 22px/1 var(--mono);color:var(--ember2)}
+  .chip.okc .n{color:var(--ok)}
+  .foot{position:absolute;left:106px;bottom:106px;font:500 18px/1 var(--mono);color:var(--muted)}
+  .tag{position:absolute;right:70px;bottom:62px;font:600 18px/1 var(--mono);color:var(--ok)}
+</style></head>
+<body>
+<div class="glow"></div>
+<div class="stream" id="s"></div>
+<div class="break"></div>
+<div class="panel"></div>
+<div class="title">
+  <div class="kicker">Gemma 4 · tool-call wire lab</div>
+  <h1><span>Firebreak</span><br>eval kit</h1>
+  <div class="sub">Scorer-faithful local eval and raw tool-call capture <em>for Gemma 4 agents on vLLM.</em></div>
+</div>
+<div class="chips">
+  <div class="chip"><span class="n">570</span> calls captured</div>
+  <div class="chip okc"><span class="n">0</span> array values</div>
+  <div class="chip okc"><span class="n">0</span> scorer hangs</div>
+</div>
+<div class="foot">vLLM 0.19.1 · gemma4 parser · swegemma harness · Apache-2.0</div>
+<div class="tag">&lt;|tool_call&gt; OK</div>
+<script>
+  const burn = [
+    'call:<b>get_code_subgraph</b>{nodes:[<i>"List[int]"</i>]}',
+    'call:<b>edit_file</b>{new_string:<|"|>…`,old_string:<|"|>…}',
+    'call:<b>read_file</b>{filepath:<|"|>params.py<|"|>,<i>start_line"</i>: 151}',
+    'call:<b>run_command</b>{command:<i>"m = {\'types\': [\'List[int]\']}"</i>}',
+    'call:<b>get_code_subgraph</b>{nodes:[<i>"a]"</i>]}',
+  ];
+  const calm = [
+    'call:<b>edit_file</b>{filepath:<|"|>fastapi/utils.py<|"|>}',
+    'call:<b>run_command</b>{command:<|"|>pytest tests/x.py<|"|>}',
+    'call:<b>read_file</b>{filepath:<|"|>params.py<|"|>,start_line:151}',
+    'call:<b>submit_patch</b>{}',
+  ];
+  const esc = s => s.replace(/<\|/g,'&lt;|').replace(/\|>/g,'|&gt;');
+  const st = document.getElementById('s');
+  const L = document.createElement('div'); L.className='clipL'; st.appendChild(L);
+  const R = document.createElement('div'); R.className='clipR'; st.appendChild(R);
+  for (let r = 0; r < 17; r++) {
+    const y = r * 36;
+    const left = document.createElement('div');
+    left.className = 'row burn';
+    left.style.top = y + 'px';
+    left.style.left = (-420 + (r * 137) % 380) + 'px';
+    left.style.opacity = (0.35 + ((r * 7) % 10) / 22).toFixed(2);
+    left.innerHTML = esc(burn[r % burn.length]) + '&nbsp;&nbsp;' + esc(burn[(r + 2) % burn.length]);
+    L.appendChild(left);
+    const right = document.createElement('div');
+    right.className = 'row calm';
+    right.style.top = y + 'px';
+    right.style.left = (22 + (r * 53) % 70) + 'px';
+    right.style.opacity = (0.30 + ((r * 5) % 10) / 24).toFixed(2);
+    right.innerHTML = esc(calm[r % calm.length]);
+    R.appendChild(right);
+  }
+</script>
+</body></html>
