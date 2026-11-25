@@ -68,7 +68,8 @@ def pypi_parser():
 
 def zips_reproducible():
     out = []
-    for z, src in (("dist/firebreak-lite.zip", "variants/firebreak-lite"), ("dist/firebreak-v2.zip", "variants/firebreak-v2")):
+    for z, src in (("dist/firebreak-lite.zip", "variants/firebreak-lite"), ("dist/firebreak-v2.zip", "variants/firebreak-v2"),
+                   ("dist/firebreak-v2-5m.zip", "variants/firebreak-v2-5m")):
         with tempfile.TemporaryDirectory() as td:
             run(PY, "-I", "verify/build_zip.py", src, f"{td}/x.zip")
             a = hashlib.sha256((ROOT / z).read_bytes()).hexdigest()
@@ -104,7 +105,7 @@ def main() -> int:
         step("C2 gold replay (129 tasks)", lambda: run(PY, "-I", "wirelab/gold.py").strip().splitlines()[2], res)
         step("Wire Lab full (C1 100k, C2, C3)", lambda: run(PY, "-I", "wirelab/run_lab.py", "--full").strip(), res)
         step("safe-edit expressibility + C5", lambda: run(PY, "-I", "wirelab/expressibility.py").strip()[:200], res)
-        for z in ("dist/firebreak-lite.zip", "dist/firebreak-v2.zip"):
+        for z in ("dist/firebreak-lite.zip", "dist/firebreak-v2.zip", "dist/firebreak-v2-5m.zip"):
             step(f"official compiler audit ({Path(z).stem})",
                  lambda z=z: run(PY, "-I", "verify/check_submission.py", z).strip().splitlines()[-1], res)
     rep = {"mode": mode, "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "steps": res,

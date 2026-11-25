@@ -99,3 +99,11 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
 - F2 is a model-side delimiter slip (D-008) the model can't see. The rejection message names the missing parameter, not the cause, so it keeps re-emitting the same text.
 - All 4 configs ran that task. Two hit the retry storm (8 and 10 rejections), the sample arm had 1 rejection, and lite had none. The cost is the rest of one task's budget, not the run.
 - The rule is kept: it is harmless and documents the fault. A real fix would have to stop the call being re-emitted unchanged, which the competition's fixed tool surface doesn't allow.
+
+**D-015 (2026-11-25): firebreak-v2-5m is a prepared fallback with a 5 min per-task cap.**
+- Submission #1 (6 min cap) has been PENDING for more than 24 h, and Kaggle accepts no new submission while one is pending.
+- The captures show about 75% of tasks run into the time cap. If the scorer runs the 120 tasks serially, 6 min gives a worst case of about 13.4 h; 5 min gives about 11.4 h, under a 12 h limit.
+- The scorer's concurrency and limit are still unknown (HARNESS_NOTES Q3). Public 8 min configs do score, so this is insurance, not a known fix.
+- Every capture (v6–v8) ran with a 5 min cap, so v8 measured exactly this config's behaviour.
+- `dist/firebreak-v2-5m.zip` sha256 `2a7f6cde…`. Its only diff from v2 is `max_time_minutes: 5`.
+- Not submitted. Use it if #1 errors on runtime or Greg chooses it over v2.

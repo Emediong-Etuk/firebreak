@@ -1,42 +1,42 @@
 {
  "mode": "lite",
- "utc": "2026-11-25T10:23:28Z",
+ "utc": "2026-11-25T14:34:52Z",
  "steps": [
   {
    "step": "pinned parser from PyPI wheel (sha256)",
    "ok": true,
-   "seconds": 14.2,
+   "seconds": 12.3,
    "detail": "parser 682b2152b76c == pinned (wheel 71a87f46cafa)"
   },
   {
    "step": "F1 reproduced on pinned parser",
    "ok": true,
-   "seconds": 6.5,
+   "seconds": 6.3,
    "detail": "HANG on 3 probes, control OK"
   },
   {
    "step": "Wire Lab tests (hashes, vendored, F2, reproducers)",
    "ok": true,
-   "seconds": 5.6,
-   "detail": "14 passed in 5.18s"
+   "seconds": 5.8,
+   "detail": "14 passed in 5.20s"
   },
   {
    "step": "safe-edit + airlock tests",
    "ok": true,
-   "seconds": 2.5,
-   "detail": "37 passed in 1.98s"
+   "seconds": 2.6,
+   "detail": "37 passed in 2.30s"
   },
   {
    "step": "guarded parser == pinned (local eval shim)",
    "ok": true,
-   "seconds": 68.7,
-   "detail": "1 passed in 68.50s (0:01:08)"
+   "seconds": 68.8,
+   "detail": "1 passed in 68.51s (0:01:08)"
   },
   {
    "step": "submission zips byte-reproducible",
    "ok": true,
    "seconds": 0.1,
-   "detail": "firebreak-lite.zip aedd66784812, firebreak-v2.zip e8694ba76e41"
+   "detail": "firebreak-lite.zip aedd66784812, firebreak-v2.zip e8694ba76e41, firebreak-v2-5m.zip 2a7f6cde7344"
   }
  ],
  "ok": true

@@ -64,3 +64,9 @@
   - F2 rule **does not**: fastapi_14605 still produced 10 identical rejected `edit_file` calls in a row. The model can't see its own delimiter slip.
   - Resolved 2/12 against firebreak-lite's 3/12 (lite's extra was fastapi_14851, won at the 40-call cap); patches 8 vs 9. Indistinguishable at n=12.
   - 0 array values, 0 SCORER_FATAL.
+
+## Fallback prepared: firebreak-v2-5m (not submitted)
+- `variants/firebreak-v2-5m` → `dist/firebreak-v2-5m.zip`, sha256 `2a7f6cde…`. It is v2 with `max_time_minutes: 5` (D-015).
+- Official compile audit OK; `make verify-lite` ALL PASS with all three zips reproducible.
+- Submit notebook built in `evalkit/submit_notebook/out_v2_5m/`; its cell dry-runs to the exact zip. Not pushed.
+- Queue: #1 PENDING for more than 24 h. #2 (v2) waits behind it (hourly `tools/submit_when_ready.py`).
