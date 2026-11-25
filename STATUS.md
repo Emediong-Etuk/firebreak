@@ -69,4 +69,5 @@
 - `variants/firebreak-v2-5m` → `dist/firebreak-v2-5m.zip`, sha256 `2a7f6cde…`. It is v2 with `max_time_minutes: 5` (D-015).
 - Official compile audit OK; `make verify-lite` ALL PASS with all three zips reproducible.
 - Submit notebook built in `evalkit/submit_notebook/out_v2_5m/`; its cell dry-runs to the exact zip. Not pushed.
-- Queue: #1 PENDING for more than 24 h. #2 (v2) waits behind it (hourly `tools/submit_when_ready.py`).
+- **#2 is now firebreak-v2-5m** (Greg's choice). `firebreak-submit` kernel v3 outputs exactly `2a7f6cde…`; v2 stays prepared as a possible #3.
+- Queue: #1 PENDING for more than 24 h. #2 waits behind it; the hourly `tools/submit_when_ready.py` submits kernel v3 once the slot frees.
