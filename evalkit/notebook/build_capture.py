@@ -21,7 +21,11 @@ for zname, src in (("firebreak-lite", "variants/firebreak-lite"), ("firebreak-v1
     subprocess.run([sys.executable, "-I", str(ROOT / "verify/build_zip.py"), str(ROOT / src), str(ds / f"{zname}.zip.bin")], check=True)
 ARM_DIRS = {"sample": "sample", "lite": "/kaggle/working/firebreak_lite", "v1": "/kaggle/working/firebreak_v1",
             "v2": "/kaggle/working/firebreak_v2"}
-arms_arg = ",".join(f"{n}={ARM_DIRS[k]}" for n, k in (x.split("=") for x in a.arms.split(",")))
+def _arm(spec: str) -> str:  # NAME=KEY[@MINUTES]
+    name, rest = spec.split("=")
+    key, _, mins = rest.partition("@")
+    return f"{name}={ARM_DIRS[key]}" + (f"@{mins}" if mins else "")
+arms_arg = ",".join(_arm(x) for x in a.arms.split(","))
 FILE_DESC = {
     "run_slice.py": "Orchestrator: installs the wheelhouse, starts vLLM with the capture plugin, runs task jobs, saves output.",
     "run_task.py": "Runs one SWE task for one agent config in the official swegemma subprocess sandbox and writes its record.",

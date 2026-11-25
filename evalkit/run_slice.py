@@ -151,7 +151,7 @@ def smoke(api_base: str, model_path: str) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="gemma-4-e4b-it-qat-w4a16-ct")
-    ap.add_argument("--arms", required=True, help="NAME=DIR,NAME=DIR (DIR may be 'sample')")
+    ap.add_argument("--arms", required=True, help="NAME=DIR[@MINUTES],... (DIR may be 'sample')")
     ap.add_argument("--slice", required=True)
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--max-time-minutes", type=float, default=5)
@@ -170,12 +170,15 @@ def main() -> int:
     import torch
     from adk_submission import VllmConfig, VllmServer
 
-    arms = {}
+    arms, arm_minutes = {}, {}
     for spec in a.arms.split(","):
         name, d = spec.split("=")
+        if "@" in d:  # NAME=DIR@MINUTES: per-arm time cap (e.g. compare 8 vs 10 min on one server)
+            d, mins = d.rsplit("@", 1)
+            arm_minutes[name] = float(mins)
         src = DATA / "sample_submission" if d == "sample" else Path(d)
         arms[name] = build_arm(src, Path(f"/kaggle/working/arms/{name}"), a.model)
-    stage("arms", arms={k: str(v) for k, v in arms.items()})
+    stage("arms", arms={k: str(v) for k, v in arms.items()}, minutes=arm_minutes)
 
     model_path = str(find_input(f"{a.model}/2/config.json").parent) if glob.glob(
         f"/kaggle/input/**/{a.model}/2/config.json", recursive=True) else str(find_input("config.json").parent)
@@ -220,15 +223,16 @@ def main() -> int:
         t, n = job
         if time.time() > deadline:  # whole-run budget spent: skip, so the run always ends and saves output
             return n, t, -2, "", "skipped: run deadline"
+        mins = arm_minutes.get(n, a.max_time_minutes)
         cmd = [sys.executable, str(HERE / "run_task.py"), "--task", t, "--submission", str(arms[n]),
                "--out", str(OUT / "tasks" / n), "--model-path", model_path, "--alias", a.model,
-               "--max-time-minutes", str(a.max_time_minutes), "--max-tool-calls", str(a.max_tool_calls),
+               "--max-time-minutes", str(mins), "--max-tool-calls", str(a.max_tool_calls),
                "--max-turns", str(a.max_turns), "--timeout-seconds", str(a.timeout_seconds)]
         # The job runs in its own process group with output to files, and the WHOLE group is killed when
         # it ends or times out. (subprocess.run(timeout=...) kills only the direct child, leaving orphaned
         # grandchildren such as pytest or sandboxed commands eating CPU for the rest of the run.)
         so_p, se_p = logs / f"{n}_{t}.out", logs / f"{n}_{t}.err"
-        limit = min(a.max_time_minutes * 60 + 900, max(60, deadline + 600 - time.time()))
+        limit = min(mins * 60 + 900, max(60, deadline + 600 - time.time()))
         with so_p.open("w") as so, se_p.open("w") as se:
             p = subprocess.Popen(cmd, stdout=so, stderr=se, stdin=subprocess.DEVNULL, start_new_session=True)
             try:
