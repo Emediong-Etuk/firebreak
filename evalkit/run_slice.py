@@ -18,6 +18,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -101,6 +102,8 @@ def main() -> int:
     ap.add_argument("--max-turns", type=int, default=80)
     ap.add_argument("--timeout-seconds", type=int, default=180)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--deadline-minutes", type=float, default=300,
+                    help="whole-run budget from start; jobs not started by then are skipped")
     a = ap.parse_args()
     t0 = time.time()
     OUT.mkdir(parents=True, exist_ok=True)
@@ -151,17 +154,37 @@ def main() -> int:
     if a.limit:
         task_ids = task_ids[: a.limit]
     jobs = [(t, n) for t in task_ids for n in arms]  # arms interleaved per task
+    deadline = t0 + a.deadline_minutes * 60
+    logs = OUT / "joblogs"; logs.mkdir(parents=True, exist_ok=True)
+
     def run(job):
         t, n = job
+        if time.time() > deadline:  # whole-run budget spent: skip, so the run always ends and saves output
+            return n, t, -2, "", "skipped: run deadline"
         cmd = [sys.executable, str(HERE / "run_task.py"), "--task", t, "--submission", str(arms[n]),
                "--out", str(OUT / "tasks" / n), "--model-path", model_path, "--alias", a.model,
                "--max-time-minutes", str(a.max_time_minutes), "--max-tool-calls", str(a.max_tool_calls),
                "--max-turns", str(a.max_turns), "--timeout-seconds", str(a.timeout_seconds)]
-        try:
-            p = subprocess.run(cmd, capture_output=True, text=True, timeout=a.max_time_minutes * 60 + 900)
-            return n, t, p.returncode, p.stdout[-400:], p.stderr[-1500:]
-        except subprocess.TimeoutExpired:
-            return n, t, -9, "", "runner timeout"
+        # The job runs in its own process group with output to files, and the WHOLE group is killed when
+        # it ends or times out. (subprocess.run(timeout=...) kills only the direct child, leaving orphaned
+        # grandchildren such as pytest or sandboxed commands eating CPU for the rest of the run.)
+        so_p, se_p = logs / f"{n}_{t}.out", logs / f"{n}_{t}.err"
+        limit = min(a.max_time_minutes * 60 + 900, max(60, deadline + 600 - time.time()))
+        with so_p.open("w") as so, se_p.open("w") as se:
+            p = subprocess.Popen(cmd, stdout=so, stderr=se, stdin=subprocess.DEVNULL, start_new_session=True)
+            try:
+                rc = p.wait(timeout=limit)
+            except subprocess.TimeoutExpired:
+                rc = -9
+            finally:
+                try:
+                    os.killpg(p.pid, signal.SIGKILL)  # reap any leftover grandchildren either way
+                except ProcessLookupError:
+                    pass
+                if p.poll() is None:
+                    p.wait()
+        tail = lambda f, k: f.read_text(errors="replace")[-k:]  # noqa: E731
+        return n, t, rc, tail(so_p, 400), ("runner timeout\n" if rc == -9 else "") + tail(se_p, 1500)
     done = 0
     with ThreadPoolExecutor(max_workers=a.workers) as ex, (OUT / "runner.log").open("w") as log:
         for n, t, rc, so, se in ex.map(run, jobs):
