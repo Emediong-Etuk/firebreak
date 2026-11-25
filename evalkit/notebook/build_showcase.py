@@ -292,5 +292,5 @@ outn.mkdir(parents=True)
     "language": "python", "kernel_type": "notebook", "is_private": bool(a.private), "enable_gpu": False,
     "enable_tpu": False, "enable_internet": False, "dataset_sources": [f"{a.owner}/firebreak-evalkit"],
     "competition_sources": [], "kernel_sources": [], "model_sources": [],
-    "keywords": ["nlp", "python", "deep learning"]}, indent=1))
+    "keywords": ["nlp", "python"]}, indent=1))
 print("built", outn, "cells:", len(cells), "| dataset files added:", len(extra))
