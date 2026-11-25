@@ -41,6 +41,11 @@
   - firebreak-lite wasted a call in 6/12 tasks on `write_file /tmp/repro.py` (path-traversal error).
   - Time is the binding cap: 7/12 tasks per arm hit the 5 min limit; 2/12 hit 40 calls.
   - Resolved (local plain grader, n=12, not significant): sample 2, firebreak-lite 3.
+- **v7 (31B, L4×4, skills arm `submission/` on the same 12 tasks): complete in 25 min, about 0.45 GPU h.** Evidence: `evidence/runs/2026-11-25_31b_l4x4_v7_skills/`.
+  - Wire-safe: 10 `run_skill_script` calls, **0 with `args`/`positional_args`**, 0 array values, 0 SCORER_FATAL.
+  - Rarely used: skills appeared in 3/12 tasks (8 safe-edit calls in one task, 2 airlock finalizes). The model mostly used `edit_file`.
+  - **F2 seen live**: content containing backticks led the model to close `new_string` with a backtick instead of `<|"|>`. That swallowed `old_string`, and 8 calls were rejected in fastapi_14605.
+  - No gain: resolved 2/12 (sample 2, lite 3); non-empty patch 7/12 (lite 9); 10/12 hit the 5 min cap (lite 7).
 
 ## Next
 - Phase 3 (needs a GPU OK): capture real completions (C4). This decides how often Gemma plain-quotes.

@@ -79,3 +79,16 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
   - Tell the model `write_file` is workspace-only. Scratch scripts go through `run_command` (heredoc to /tmp or `python - <<EOF`). This cost a call in 6/12 tasks.
   - Revisit the time cap: 7/12 tasks hit 5 min.
 - Revisit when a skills arm is captured.
+
+**D-013 (2026-11-25): Skills don't ship. Submission #2 is skill-free firebreak-lite plus the fixes C4 points to.**
+- v7 settles the wire question: 31B left the `run_skill_script` arrays empty in all 10 calls.
+- But the skills didn't earn their place:
+  - Used in 3/12 tasks.
+  - The safe-edit protocol costs about 4 calls per edit.
+  - The skills arm resolved 2/12 against firebreak-lite's 3/12, submitted fewer patches (7 vs 9) and hit the time cap more (10 vs 7).
+  - n=12 proves nothing about the difference, and there is no sign of a benefit.
+- Per operating rule 7 (add only what pays), skills stay out.
+- Submission #2 = firebreak-lite plus prompt fixes for the two faults C4 found in every arm:
+  1. `write_file` is workspace-only: 11 wasted calls across v6/v7.
+  2. When `edit_file` is rejected for a missing parameter, don't resend the same call. Rewrite with a smaller `old_string` that avoids backticks and quotes at the ends, or rewrite the file with `write_file`. This stops the F2 retry storm.
+- Revisit skills only with a protocol that costs at most 1 call per edit.

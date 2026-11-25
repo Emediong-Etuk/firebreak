@@ -1,0 +1,80 @@
+{
+ "run": "2026-11-25_31b_l4x4_v7_skills",
+ "jobs": 12,
+ "capture_records": 324,
+ "scorer_fatal_events": 0,
+ "system_hash_to_arm": {
+  "e9081bb4": "C"
+ },
+ "arms": {
+  "C": {
+   "tasks": 12,
+   "runner_errors": 0,
+   "resolved_local_plain_grader": 2,
+   "resolved_scorer_equivalent": 2,
+   "tasks_in_flight_at_fatal": 0,
+   "mean_tool_calls": 25.83,
+   "trace_rejected_calls": 13,
+   "trace_tool_errors": 49,
+   "tasks_with_retry_storm_ge3": 1,
+   "skill_or_subagent_calls": {
+    "run_skill_script": 10,
+    "load_skill": 1
+   },
+   "submitted_nonempty_patch": 7,
+   "edit_strategies": {
+    "unescaped": 3,
+    "exact": 18
+   },
+   "error_types_top": [
+    [
+     "run_command:CommandError:",
+     25
+    ],
+    [
+     "write_file:FileWriteError:Path traversal detected: ",
+     5
+    ],
+    [
+     "run_command:CommandError:Traceback (most recent call last):\\n  File \\",
+     3
+    ],
+    [
+     "run_command:CommandError:  File \\",
+     1
+    ],
+    [
+     "run_command:CommandError:\\n==================================== ERRORS ==============",
+     1
+    ],
+    [
+     "run_command:CommandError:/bin/bash: -c: line 1: unexpected EOF while looking for matc",
+     1
+    ]
+   ],
+   "tasks_hitting_time_cap": 10,
+   "tasks_hitting_call_cap": 0,
+   "mean_duration_seconds": 280.9,
+   "wire": {
+    "completions": 323,
+    "calls": 321,
+    "value_marker": 395,
+    "value_bare": 146,
+    "string_arg_literal_backslash_n_only": 10,
+    "skill_script_calls": 10,
+    "junk_key_calls": 2,
+    "rejected_calls": 8
+   },
+   "plain_quote_rate": 0.0,
+   "array_value_call_rate": 0.0,
+   "top_plain_params": [],
+   "rejected_examples": [
+    [
+     "edit_file: mandatory input parameters are not present: old_string",
+     8
+    ]
+   ]
+  }
+ },
+ "fatal_examples": []
+}
