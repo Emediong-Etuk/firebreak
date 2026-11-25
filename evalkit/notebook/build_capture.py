@@ -1,5 +1,5 @@
 """Build (1) the private dataset dir with the eval kit and (2) the GPU capture notebook.
-Usage: build_capture.py OWNER [--model gemma-4-e4b-it-qat-w4a16-ct] [--accel t4x2|l4x4] [--limit N]"""
+Usage: build_capture.py OWNER [--model gemma-4-e4b-it-qat-w4a16-ct] [--accel t4x2|l4x4] [--limit N] [--deadline-minutes M]"""
 import argparse, json, shutil, subprocess, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
@@ -9,6 +9,7 @@ ap.add_argument("--accel", default="t4x2", choices=["t4x2", "l4x4"])
 ap.add_argument("--limit", type=int, default=0)
 ap.add_argument("--slug", default="firebreak-capture")
 ap.add_argument("--workers", type=int, default=3)
+ap.add_argument("--deadline-minutes", type=float, default=150, help="run_slice whole-run budget")
 a = ap.parse_args()
 OUTD = ROOT / "evalkit/notebook/out"; shutil.rmtree(OUTD, ignore_errors=True)
 ds = OUTD / "dataset"; ds.mkdir(parents=True)
@@ -24,7 +25,8 @@ EK = Path(glob.glob("/kaggle/input/**/run_slice.py", recursive=True)[0]).parent
 W = Path("/kaggle/working/evalkit"); shutil.copytree(EK, W, dirs_exist_ok=True)
 zipfile.ZipFile(W / "firebreak-lite.zip.bin").extractall("/kaggle/working/firebreak_lite")
 cmd = [sys.executable, str(W / "run_slice.py"), "--model", "{a.model}", "--arms", "A=sample,B=/kaggle/working/firebreak_lite",
-       "--slice", str(W / "slice40.json"), "--workers", "{a.workers}", "--limit", "{a.limit}"]
+       "--slice", str(W / "slice40.json"), "--workers", "{a.workers}", "--limit", "{a.limit}",
+       "--deadline-minutes", "{a.deadline_minutes}"]
 print(" ".join(cmd), flush=True)
 subprocess.run(cmd, check=True)
 '''
