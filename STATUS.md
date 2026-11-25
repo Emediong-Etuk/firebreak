@@ -71,3 +71,8 @@
 - Submit notebook built in `evalkit/submit_notebook/out_v2_5m/`; its cell dry-runs to the exact zip. Not pushed.
 - **#2 is now firebreak-v2-5m** (Greg's choice). `firebreak-submit` kernel v3 outputs exactly `2a7f6cde…`; v2 stays prepared as a possible #3.
 - Queue: #1 PENDING for more than 24 h. #2 waits behind it; the hourly `tools/submit_when_ready.py` submits kernel v3 once the slot frees.
+
+## Leaderboard
+- **#1 firebreak-lite: public score 0.12** (submitted 2026-11-24 13:32, scored 2026-11-25 between 19:53 and 20:54 UTC, about 31 h).
+- **#2 firebreak-v2-5m submitted** 2026-11-25 20:54 UTC, ref 58909530, PENDING.
+- For reference, the leaderboard top is 0.24 (several teams), and public configs with 8 min caps reach 0.22.
