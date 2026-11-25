@@ -92,3 +92,10 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
   1. `write_file` is workspace-only: 11 wasted calls across v6/v7.
   2. When `edit_file` is rejected for a missing parameter, don't resend the same call. Rewrite with a smaller `old_string` that avoids backticks and quotes at the ends, or rewrite the file with `write_file`. This stops the F2 retry storm.
 - Revisit skills only with a protocol that costs at most 1 call per edit.
+
+**D-014 (2026-11-25): Prompt rules can't fix F2; the `/tmp` rule stays.**
+- In v8, firebreak-v2's `/tmp` rule removed every path-traversal error (6/12 tasks before, 0 after).
+- Its F2 retry rule had no effect: 10 identical rejected calls in a row on fastapi_14605, the same task that stormed 8× in v7.
+- F2 is a model-side delimiter slip (D-008) the model can't see. The rejection message names the missing parameter, not the cause, so it keeps re-emitting the same text.
+- That task triggered F2 in 2 of 3 configs. The cost is the rest of one task's budget, not the run.
+- The rule is kept: it is harmless and documents the fault. A real fix would have to stop the call being re-emitted unchanged, which the competition's fixed tool surface doesn't allow.

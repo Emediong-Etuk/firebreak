@@ -59,4 +59,8 @@
   - Official compile audit OK, no arrays.
   - `make verify-lite` ALL PASS; both zips byte-reproducible.
   - The CPU submit notebook cell was dry-run and reproduces the exact zip.
-- Not measured on GPU. The prompt delta is small, and a v8 capture of v2 would cost about 0.5 GPU h.
+- **Capture v8 (31B, L4×4, same 12 tasks): complete in 25 min, about 0.45 GPU h.** Evidence: `evidence/runs/2026-11-25_31b_l4x4_v8_v2/`.
+  - `/tmp` rule **works**: 0 path-traversal errors (firebreak-lite: 6/12 tasks).
+  - F2 rule **does not**: fastapi_14605 still produced 10 identical rejected `edit_file` calls in a row. The model can't see its own delimiter slip.
+  - Resolved 2/12 against firebreak-lite's 3/12 (lite's extra was fastapi_14851, won at the 40-call cap); patches 8 vs 9. Indistinguishable at n=12.
+  - 0 array values, 0 SCORER_FATAL.

@@ -1,0 +1,76 @@
+{
+ "run": "2026-11-25_31b_l4x4_v8_v2",
+ "jobs": 12,
+ "capture_records": 273,
+ "scorer_fatal_events": 0,
+ "system_hash_to_arm": {
+  "59479bc4": "D"
+ },
+ "arms": {
+  "D": {
+   "tasks": 12,
+   "runner_errors": 0,
+   "resolved_local_plain_grader": 2,
+   "resolved_scorer_equivalent": 2,
+   "tasks_in_flight_at_fatal": 0,
+   "mean_tool_calls": 21.17,
+   "trace_rejected_calls": 12,
+   "trace_tool_errors": 34,
+   "tasks_with_retry_storm_ge3": 1,
+   "skill_or_subagent_calls": {},
+   "submitted_nonempty_patch": 8,
+   "edit_strategies": {
+    "exact": 27,
+    "unescaped": 17
+   },
+   "error_types_top": [
+    [
+     "run_command:CommandError:",
+     13
+    ],
+    [
+     "run_command:CommandError:============================= test session starts ==========",
+     3
+    ],
+    [
+     "edit_file:FileEditError:Failed to replace: old_string not found. Ensure you",
+     2
+    ],
+    [
+     "run_command:CommandError:Traceback (most recent call last):\\n  File \\",
+     2
+    ],
+    [
+     "run_command:TimeoutExceeded:Command timed out after 180 seconds",
+     1
+    ],
+    [
+     "edit_file:FileEditError:No changes to apply. old_string and new_string are identical",
+     1
+    ]
+   ],
+   "tasks_hitting_time_cap": 9,
+   "tasks_hitting_call_cap": 1,
+   "mean_duration_seconds": 264.9,
+   "wire": {
+    "completions": 272,
+    "calls": 269,
+    "value_marker": 370,
+    "value_bare": 108,
+    "junk_key_calls": 2,
+    "string_arg_literal_backslash_n_only": 46,
+    "rejected_calls": 10
+   },
+   "plain_quote_rate": 0.0,
+   "array_value_call_rate": 0.0,
+   "top_plain_params": [],
+   "rejected_examples": [
+    [
+     "edit_file: mandatory input parameters are not present: old_string",
+     10
+    ]
+   ]
+  }
+ },
+ "fatal_examples": []
+}
