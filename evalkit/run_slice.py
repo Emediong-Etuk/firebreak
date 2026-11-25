@@ -21,12 +21,14 @@ import shutil
 import signal
 import subprocess
 import sys
+import threading
+import traceback
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-OUT = Path("/kaggle/working/out")
+OUT = Path(os.environ.get("FIREBREAK_OUT", "/kaggle/working/out"))  # override for local tests
 DATA = Path("/kaggle/input/competitions/gemma-4-developer-agent")
 
 
@@ -37,6 +39,61 @@ def stage(name: str, **kw) -> None:
     d["stages"].append({"stage": name, "t": time.time(), **kw})
     p.write_text(json.dumps(d, indent=1, default=str) + "\n")
     print(f"[stage] {name} {kw}", flush=True)
+
+
+FATAL = ("CUDA out of memory", "Engine core initialization failed", "EngineCore failed", "WorkerProc hit an exception",
+         "RuntimeError: Worker failed")
+
+
+def copy_server_log(server) -> None:
+    lp = getattr(server, "log_path", None)
+    if lp and Path(lp).exists():
+        try:
+            shutil.copy(lp, OUT / "vllm_server.log")
+        except OSError:
+            pass
+
+
+def tail_server_log(server, stop: threading.Event) -> None:
+    """Copy the vLLM log to OUT every 20 s and kill the server on a fatal engine error, so start() fails in
+    seconds instead of waiting out startup_timeout with a dead engine behind a live API process (run v5)."""
+    while not stop.wait(20):
+        copy_server_log(server)
+        p = OUT / "vllm_server.log"
+        txt = p.read_text(errors="replace")[-200_000:] if p.exists() else ""
+        hit = next((f for f in FATAL if f in txt), None)
+        if hit and server.process is not None and server.process.poll() is None:
+            stage("server_fatal", pattern=hit)
+            kill_vllm(server.process.pid)
+            return
+
+
+def _descendants(pid: int) -> list[int]:
+    kids: dict[int, list[int]] = {}
+    for d in Path("/proc").iterdir():
+        if d.name.isdigit():
+            try:
+                ppid = int((d / "stat").read_text().rsplit(")", 1)[1].split()[1])
+            except (OSError, IndexError, ValueError):
+                continue
+            kids.setdefault(ppid, []).append(int(d.name))
+    out, todo = [], [pid]
+    while todo:
+        for c in kids.get(todo.pop(), []):
+            out.append(c); todo.append(c)
+    return out
+
+
+def kill_vllm(root_pid: int | None = None) -> None:
+    """SIGKILL a process tree by pid (default: every descendant of this process), deepest first.
+    vLLM's API server spawns EngineCore and TP workers; killing only the API server orphans them."""
+    pids = _descendants(root_pid or os.getpid()) + ([root_pid] if root_pid else [])
+    for pid in reversed(pids):
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            pass
+    time.sleep(2)
 
 
 def find_input(pattern: str) -> Path:
@@ -102,6 +159,7 @@ def main() -> int:
     ap.add_argument("--max-turns", type=int, default=80)
     ap.add_argument("--timeout-seconds", type=int, default=180)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--max-num-seqs", type=int, default=16)
     ap.add_argument("--deadline-minutes", type=float, default=300,
                     help="whole-run budget from start; jobs not started by then are skipped")
     a = ap.parse_args()
@@ -129,24 +187,25 @@ def main() -> int:
     cfg = VllmConfig(model=model_path, port=8000, host="127.0.0.1", tool_call_parser="gemma4", reasoning_parser="gemma4",
                      max_model_len=32768, dtype="bfloat16" if bf16 else "half", gpu_memory_utilization=0.90,  # T4: no bf16
                      enable_auto_tool_choice=True, enable_lora=False, scheduler_reserve_full_isl=False,
-                     tensor_parallel_size=4 if ngpu >= 4 else (2 if ngpu >= 2 else 1), startup_timeout=60 * 25,
-                     extra_args=["--tool-parser-plugin", str(HERE / "capture_shim.py")])
+                     tensor_parallel_size=4 if ngpu >= 4 else (2 if ngpu >= 2 else 1), startup_timeout=60 * 20,
+                     # max_num_seqs: the default 256 OOMs in vLLM's sampler warm-up for 31B on 4xL4 (run v5)
+                     extra_args=["--tool-parser-plugin", str(HERE / "capture_shim.py"),
+                                 "--max-num-seqs", str(a.max_num_seqs)])
     server = VllmServer(cfg)
+    stop_tail = threading.Event()
+    threading.Thread(target=tail_server_log, args=(server, stop_tail), daemon=True).start()
     try:
-        server.start()
+        server.start()  # raises ServerStartupError when the process dies or startup_timeout passes
     finally:
-        for lp in [getattr(server, "log_path", None)]:
-            if lp and Path(lp).exists():
-                shutil.copy(lp, OUT / "vllm_server.log")
+        copy_server_log(server)
     stage("server_up", gpus=ngpu, bf16=bf16, model_path=model_path, seconds=round(time.time() - t0))
 
     s = smoke("http://127.0.0.1:8000/v1", model_path)
     (OUT / "smoke.json").write_text(json.dumps(s, indent=1) + "\n")
     stage("smoke", ok=s["ok"])
     if not s["ok"]:
-        lp = getattr(server, "log_path", None)
-        if lp and Path(lp).exists():
-            shutil.copy(lp, OUT / "vllm_server.log")
+        stop_tail.set()
+        copy_server_log(server)
         server.stop()
         raise SystemExit("smoke gate failed; aborting before any task (see out/smoke.json)")
 
@@ -192,13 +251,30 @@ def main() -> int:
             log.write(json.dumps({"arm": n, "task": t, "rc": rc, "stdout": so, "stderr": se}) + "\n"); log.flush()
             print(f"[{done}/{len(jobs)}] {n} {t} rc={rc} {so.strip()[-160:]}", flush=True)
     stage("tasks_done", jobs=len(jobs), seconds=round(time.time() - t0))
-    lp = getattr(server, "log_path", None)
-    if lp and Path(lp).exists():  # copy BEFORE stop(): stop() deletes the log file
-        shutil.copy(lp, OUT / "vllm_server.log")
+    stop_tail.set()
+    copy_server_log(server)  # copy BEFORE stop(): stop() deletes the log file
     server.stop()
     stage("finished", seconds=round(time.time() - t0))
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    # Never hang on exit (run v5 sat 11.5 h after its startup error): print the error, kill every vLLM
+    # process, flush, and hard-exit regardless of leftover threads or children.
+    rc = 1
+    try:
+        rc = main() or 0
+    except SystemExit as e:
+        print(f"[exit] {e}", flush=True)
+        rc = e.code if isinstance(e.code, int) else 1
+    except BaseException:  # noqa: BLE001
+        traceback.print_exc()
+        rc = 1
+    finally:
+        try:
+            stage("exit", rc=rc)
+        except Exception:  # noqa: BLE001
+            pass
+        kill_vllm()
+        sys.stdout.flush(); sys.stderr.flush()
+        os._exit(rc)

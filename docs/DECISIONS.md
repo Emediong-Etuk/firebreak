@@ -52,3 +52,18 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
 - It then failed in memory profiling. Gemma 4 has `global_head_dim=512`, so vLLM forces `TRITON_ATTN`, and `kernel_unified_attention_2d` needs 98,304 B of shared memory against T4's 65,536 B limit.
 - There's no config knob for this short of patching vLLM. The evidence is in `evidence/runs/2026-11-24_e4b_t4x2_attempts/attempts.json`.
 - C4 data must come from L4×4 (compute capability 8.9, bf16), which is also the scorer's hardware.
+
+**D-011 (2026-11-25): Capture runs fail fast and have a hard wall clock.**
+- Run v5 (31B on L4×4) spent about 12 GPU hours and produced no task data (`evidence/runs/2026-11-24_31b_l4x4_v5/failure.json`).
+- What happened:
+  - vLLM's sampler warm-up ran 256 dummy requests (the `max_num_seqs` default) and ran out of CUDA memory at 0.90 GPU memory utilisation.
+  - The engine died but the API process stayed up. `VllmServer.start()` only gave up at its 25 min `startup_timeout`.
+  - The notebook then never finished, until Kaggle's 43,200 s cell limit. The exact hang is unproven; orphaned vLLM workers are the likely cause.
+- Fixes in `evalkit/run_slice.py` and `evalkit/notebook/build_capture.py`:
+  - `--max-num-seqs 16`. The run needs at most about 8 concurrent sequences.
+  - A log watcher kills the server's whole process tree on a fatal engine error, so start-up fails in seconds.
+  - Every exit path kills all descendants and calls `os._exit`. Each job runs in its own process group and is `killpg`'d.
+  - A whole-run `--deadline-minutes` skips jobs not started in time.
+  - The notebook cell runs the orchestrator in its own session, with output to a file and a hard limit of deadline + 40 min, then kills the group.
+- Tested locally: a fake server that logs the v5 OOM is killed with its child in about 20 s, and an early error exits in 2 s.
+- The scorer's own vLLM settings are the host's, not ours, so this affects only our capture runs.

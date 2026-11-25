@@ -28,7 +28,27 @@ cmd = [sys.executable, str(W / "run_slice.py"), "--model", "{a.model}", "--arms"
        "--slice", str(W / "slice40.json"), "--workers", "{a.workers}", "--limit", "{a.limit}",
        "--deadline-minutes", "{a.deadline_minutes}"]
 print(" ".join(cmd), flush=True)
-subprocess.run(cmd, check=True)
+# Hard wall clock for the whole run, in its own process group, output to a file (not the kernel's pipe):
+# run v5 sat 11.5 h after a startup error until Kaggle's 12 h cell limit.
+import os, signal, time
+OUT = Path("/kaggle/working/out"); OUT.mkdir(parents=True, exist_ok=True)
+LIMIT = ({a.deadline_minutes} + 40) * 60
+with open(OUT / "run_slice.log", "w") as f:
+    p = subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, start_new_session=True)
+    t0 = time.time(); rc = None
+    while rc is None and time.time() - t0 < LIMIT:
+        time.sleep(30); rc = p.poll()
+    if rc is None:
+        print(f"[notebook] hard limit {{LIMIT}}s reached; killing run", flush=True)
+    for sig in (signal.SIGTERM, signal.SIGKILL):
+        try: os.killpg(p.pid, sig)
+        except ProcessLookupError: pass
+        time.sleep(5)
+    for pat in ("vllm.entrypoints", "VLLM::", "vllm serve"):
+        subprocess.run(["pkill", "-9", "-f", pat])
+print("".join(open(OUT / "run_slice.log", errors="replace").readlines()[-150:]), flush=True)
+print(open(OUT / "stage.json").read() if (OUT / "stage.json").exists() else "no stage.json", flush=True)
+print(f"[notebook] run_slice rc={{rc}} after {{round(time.time() - t0)}}s", flush=True)
 '''
 nb = {"cells": [{"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [], "source": code.splitlines(True)}],
       "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},

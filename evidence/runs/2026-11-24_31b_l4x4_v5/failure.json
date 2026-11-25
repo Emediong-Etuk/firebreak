@@ -1,0 +1,105 @@
+{
+ "run": "2026-11-24_31b_l4x4_v5",
+ "stages_reached": [
+  "installed",
+  "arms"
+ ],
+ "log_entries": 497,
+ "log_first_t": 9,
+ "log_last_t": 43213,
+ "log_last_line": "Capturing CUDA graphs (mixTimeout waiting for execute reply (43200s).",
+ "output_files": [
+  "out/stage.json"
+ ],
+ "key_lines": [
+  {
+   "t": 1622,
+   "line": "WARNING:adk_submission.server:Inference server did not terminate within 10.0s; killing..."
+  },
+  {
+   "t": 1623,
+   "line": "Traceback (most recent call last):"
+  },
+  {
+   "t": 1623,
+   "line": "    raise SystemExit(main())"
+  },
+  {
+   "t": 1623,
+   "line": "    raise ServerStartupError("
+  },
+  {
+   "t": 1623,
+   "line": "adk_submission.errors.ServerStartupError: Inference server did not become healthy within 1500s."
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]     self.model_executor.initialize_from_config(kv_cache_configs)"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]   File \"/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py\", line 118, in initialize_from_config"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]     compilation_times: list[float] = self.collective_rpc(\"compile_or_warm_up_model\")"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]   File \"/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py\", line 397, in collective_rpc"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]     return aggregate(get_response())"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]                      ^^^^^^^^^^^^^^"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]   File \"/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py\", line 380, in get_response"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108]     raise RuntimeError("
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) ERROR 11-24 19:07:20 [core.py:1108] RuntimeError: Worker failed with error 'CUDA out of memory occurred when warming up sampler with 256 dummy requests. Please try lowering `max_num_seqs` or `gpu_memory_utilization` when initializing the engine.', please check the stack trace above for the root cause"
+  },
+  {
+   "t": 1623,
+   "line": "(APIServer pid=196) INFO 11-24 19:01:42 [utils.py:233] non-default args: {'enable_auto_tool_choice': True, 'tool_call_parser': 'gemma4', 'tool_parser_plugin': '/kaggle/working/evalkit/capture_shim.py', 'host': '127.0.0.1', 'model': '/kaggle/input/models/google/gemma-4/other/gemma-4-31b-it-qat-w4a16-ct/2', 'dtype': 'bfloat16', 'max_model_len': 32768, 'reasoning_parser': 'gemma4', 'tensor_parallel_s"
+  },
+  {
+   "t": 1623,
+   "line": "(Worker pid=726) WARNING 11-24 19:02:55 [custom_all_reduce.py:154] Custom allreduce is disabled because it's not supported on more than two PCIe-only GPUs. To silence this warning, specify disable_custom_all_reduce=True explicitly."
+  },
+  {
+   "t": 1623,
+   "line": "(Worker_TP1 pid=725) INFO 11-24 19:06:52 [gpu_worker.py:470] In v0.19, CUDA graph memory profiling will be enabled by default (VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1), which more accurately accounts for CUDA graph memory during KV cache allocation. To try it now, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1 and increase --gpu-memory-utilization from 0.9000 to 0.9965 to maintain the same effe"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) INFO 11-24 19:06:52 [kv_cache_utils.py:1319] GPU KV cache size: 55,344 tokens"
+  },
+  {
+   "t": 1623,
+   "line": "(EngineCore pid=563) INFO 11-24 19:06:52 [kv_cache_utils.py:1324] Maximum concurrency for 32,768 tokens per request: 10.43x"
+  },
+  {
+   "t": 1623,
+   "line": "Capturing CUDA graphs (mixWARNING:adk_submission.server:Inference server did not terminate within 10.0s; killing..."
+  },
+  {
+   "t": 43213,
+   "line": "Capturing CUDA graphs (mixTimeout waiting for execute reply (43200s)."
+  }
+ ],
+ "note": "Kaggle lastRunTime 2026-11-24 18:59 UTC; status CANCEL_ACKNOWLEDGED at 07:01 UTC after the 43200 s cell timeout"
+}

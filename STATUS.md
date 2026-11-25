@@ -30,8 +30,10 @@
 - `make verify-lite` passes from a fresh venv in about 1.5 min (no Kaggle account).
 - Firebreak v1 candidate in `submission/` uses skills. The audit flags `run_skill_script` arrays, so shipping it is gated on C4.
 
-## Running
-- E4B T4×2 capture notebook `emediongetuk/firebreak-capture` v4: A=sample vs B=firebreak-lite, 40 tasks.
+## Capture runs (C4): no data yet
+- v1–v4 (E4B, T4×2): failed at start-up. T4 can't serve Gemma 4 (D-010).
+- v5 (31B, L4×4, 40 tasks × 2 arms): **no task ran.** vLLM ran out of memory in its sampler warm-up at 19:07 UTC, its API process stayed up, start-up timed out at about 19:26, and the notebook then hung until Kaggle's 12 h cell limit (07:01 UTC). About 12 GPU hours were spent. Evidence: `evidence/runs/2026-11-24_31b_l4x4_v5/failure.json`. Fixes: D-011.
+- v6 is prepared but not pushed (needs Greg's OK): 12 tasks × 2 arms, `--max-num-seqs 16`, 150 min run deadline, notebook hard limit 190 min.
 
 ## Next
 - Phase 3 (needs a GPU OK): capture real completions (C4). This decides how often Gemma plain-quotes.
