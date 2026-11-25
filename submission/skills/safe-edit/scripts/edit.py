@@ -23,7 +23,20 @@ import sys
 import tempfile
 from pathlib import Path
 
-WS = Path(os.environ.get("FIREBREAK_WORKSPACE", "/workspace"))
+
+
+def _workspace() -> Path:
+    """The repo the agent works in. ADK runs skill scripts from a temp copy of the skill (cwd != repo), so
+    look for it: the scorer's Docker /workspace, else the sandbox shell's PWD / PYTHONPATH (local runs)."""
+    cands = [os.environ.get("FIREBREAK_WORKSPACE"), "/workspace", os.environ.get("PWD"),
+             *(os.environ.get("PYTHONPATH") or "").split(os.pathsep)]
+    for c in cands:
+        if c and (Path(c) / ".git").exists():
+            return Path(c)
+    return Path(os.environ.get("FIREBREAK_WORKSPACE") or "/workspace")
+
+
+WS = _workspace()
 FB = WS / ".firebreak"
 ESC = {"@@TQ@@": '"' * 3, "@@SQ3@@": "'" * 3}
 END = "@@END@@"

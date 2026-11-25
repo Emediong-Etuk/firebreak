@@ -200,6 +200,11 @@ def main() -> int:
             if any(not re.fullmatch(r"[A-Za-z_]\w*", k) for k in a):
                 st["junk_key_calls"] += 1
                 examples[(arm, "junk")].append(sorted(a)[:6])
+            if fn == "run_skill_script":  # does the model ever fill the array-typed params?
+                st["skill_script_calls"] += 1
+                for k in ("args", "positional_args", "short_options"):
+                    if k in a:
+                        st[f"skill_script_with_{k}"] += 1
             ok, why = validate(fn, a)
             if not ok:
                 st["rejected_calls"] += 1
