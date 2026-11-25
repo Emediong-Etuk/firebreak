@@ -49,3 +49,14 @@
 
 ## Next
 - Phase 3 (needs a GPU OK): capture real completions (C4). This decides how often Gemma plain-quotes.
+
+## Submission #2 candidate (prepared, not submitted; needs Greg's OK)
+- `variants/firebreak-v2` → `dist/firebreak-v2.zip`, sha256 `e8694ba7…`.
+- Changes from firebreak-lite: two prompt rules from C4 (D-013).
+  - `write_file` is workspace-only; scratch scripts go through a `run_command` heredoc.
+  - After a "mandatory input parameters are not present" rejection, retry once with a shorter, quote-free-ended anchor, then fall back to `write_file`.
+- Checks:
+  - Official compile audit OK, no arrays.
+  - `make verify-lite` ALL PASS; both zips byte-reproducible.
+  - The CPU submit notebook cell was dry-run and reproduces the exact zip.
+- Not measured on GPU. The prompt delta is small, and a v8 capture of v2 would cost about 0.5 GPU h.
