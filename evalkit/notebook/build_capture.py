@@ -22,8 +22,38 @@ for zname, src in (("firebreak-lite", "variants/firebreak-lite"), ("firebreak-v1
 ARM_DIRS = {"sample": "sample", "lite": "/kaggle/working/firebreak_lite", "v1": "/kaggle/working/firebreak_v1",
             "v2": "/kaggle/working/firebreak_v2"}
 arms_arg = ",".join(f"{n}={ARM_DIRS[k]}" for n, k in (x.split("=") for x in a.arms.split(",")))
-(ds / "dataset-metadata.json").write_text(json.dumps({"title": "firebreak-evalkit", "id": f"{a.owner}/firebreak-evalkit",
-                                                       "licenses": [{"name": "apache-2.0"}]}, indent=1))
+FILE_DESC = {
+    "run_slice.py": "Orchestrator: installs the wheelhouse, starts vLLM with the capture plugin, runs task jobs, saves output.",
+    "run_task.py": "Runs one SWE task for one agent config in the official swegemma subprocess sandbox and writes its record.",
+    "capture_shim.py": "vLLM tool-parser plugin: logs every raw completion the gemma4 parser sees (Wire Lab corpus C4).",
+    "guarded_parse.py": "Copy of the pinned gemma4 array parser with a progress guard, so a would-be scorer hang is logged.",
+    "slice40.json": "Seeded 40-task slice of the competition tasks used for capture runs (fastapi, rich, requests, httpx).",
+    "firebreak-lite.zip.bin": "Firebreak submission #1 config (zip renamed .bin), byte-identical to dist/firebreak-lite.zip.",
+    "firebreak-v1.zip.bin": "Firebreak skills config (safe-edit + airlock skills), measured in capture v7; not shipped.",
+    "firebreak-v2.zip.bin": "Firebreak v2 config: firebreak-lite plus two prompt rules from captured-completion data.",
+}
+(ds / "dataset-metadata.json").write_text(json.dumps({
+    "title": "firebreak-evalkit", "id": f"{a.owner}/firebreak-evalkit",
+    "subtitle": "Scorer-faithful local eval and tool-call capture kit for Gemma 4 agents",
+    "description": (
+        "# Firebreak eval kit\n\n"
+        "Scripts used by the Firebreak capture notebook for the Gemma 4 Developer Agent competition. They run "
+        "agent configs on a slice of the competition tasks with the official swegemma harness and vLLM 0.19.1, "
+        "and record every raw tool-call completion the gemma4 parser sees. That data measures how Gemma 4 31B "
+        "actually formats tool calls: marker-quoted vs plain-quoted strings, array values, malformed keys.\n\n"
+        "## Contents\n"
+        "- Python scripts: orchestrator, per-task runner, vLLM parser plugin, guarded parser copy.\n"
+        "- `slice40.json`: the seeded task slice.\n"
+        "- `*.zip.bin`: agent configs (ordinary zip files renamed so Kaggle does not unpack them).\n\n"
+        "## Use\n"
+        "Attach to a GPU notebook (L4x4) together with the competition data, the host wheelhouse dataset and the "
+        "Gemma 4 model, then run `run_slice.py --arms NAME=DIR --slice slice40.json`. Every run has a hard wall "
+        "clock and fails fast if the model server dies.\n\n"
+        "Source, evidence and decisions live in the Firebreak repository. Apache-2.0."),
+    "licenses": [{"name": "apache-2.0"}],
+    "expectedUpdateFrequency": "never",
+    "resources": [{"path": f, "description": d} for f, d in FILE_DESC.items()],
+}, indent=1))
 code = f'''import glob, shutil, subprocess, sys, zipfile
 from pathlib import Path
 EK = Path(glob.glob("/kaggle/input/**/run_slice.py", recursive=True)[0]).parent
