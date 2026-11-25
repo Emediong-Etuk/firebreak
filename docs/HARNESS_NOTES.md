@@ -109,3 +109,8 @@ ADK `AgentTool` without an `input_schema` declares a single `request: string` pa
 - [S] Runtime: `python3` inside Container A (Python 3.13, offline, 4 GiB RAM, 2 vCPU). The timeout is `min(command_timeout_seconds, remaining session time)`.
 - [S `_build_wrapper_code`] The script's cwd is a fresh temp dir holding the skill's files, and `_orig_cwd` is `/workspace`. All skill files are embedded in the wrapper for each call.
 - No env restrictions beyond the container's.
+
+## Submission queue (learned 2026-11-25)
+- Kaggle allows **one pending submission per team**. A second submit fails with 400 FAILED_PRECONDITION: "Your team already has 1 pending submissions; please wait for one to finish scoring." A rejected attempt does not use the daily slot.
+- Scoring latency is long: submission #1 (firebreak-lite, submitted 2026-11-24 13:32 UTC) was still PENDING about 22 h later.
+- So submissions are serialized behind scoring. `tools/submit_when_ready.py` submits an approved, hash-checked kernel version as soon as the queue is clear.
