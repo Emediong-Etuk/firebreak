@@ -10,7 +10,7 @@ Arm attribution: session_hint = sha(system)[:8] | sha(first user msg)[:12] | tex
 from the problem statement; the arm from the system-prompt hash (mapped by majority vote against the
 time windows of each arm's job for that task).
 
-Usage: python -I evalkit/analyze_capture.py OUT_DIR RUN_NAME
+Usage: python -I evalkit/analyze_capture.py OUT_DIR RUN_NAME [MAX_TIME_MINUTES=5] [MAX_TOOL_CALLS=40]
 """
 from __future__ import annotations
 
@@ -100,12 +100,29 @@ def trace_metrics(path: Path) -> dict:
         run = run + 1 if (is_err and call == prev) else (1 if is_err else 0)
         best = max(best, run)
         prev = call if is_err else None
+    # edit strategies (swegemma repairs literal \\n escapes via its 'unescaped' strategy) and error types
+    strategies, err_types = collections.Counter(), collections.Counter()
+    for e in tr.entries:
+        if e.event_type != "tool_response":
+            continue
+        res = e.tool_result or ""
+        if e.tool_name == "edit_file":
+            m = re.search(r"strategy['\"]?\s*[:=]\s*['\"]?(\w+)", res)
+            if m:
+                strategies[m.group(1)] += 1
+        m = re.search(r"error_type['\"]?\s*[:=]\s*['\"](\w+)", res)
+        if m:
+            msg = re.search(r"error_message['\"]?\s*[:=]\s*['\"]([^'\"]{0,60})", res)
+            err_types[f"{e.tool_name}:{m.group(1)}:{msg.group(1) if msg else ''}"[:110]] += 1
     return {"tool_calls_by_type": dict(by_tool), "tool_errors": errors, "rejected_calls": rejected,
-            "max_identical_failed_retry_run": best}
+            "max_identical_failed_retry_run": best, "edit_strategies": dict(strategies),
+            "error_types": dict(err_types)}
 
 
 def main() -> int:
     out_dir, name = Path(sys.argv[1]), sys.argv[2]
+    time_cap_s = float(sys.argv[3]) * 60 if len(sys.argv) > 3 else 300.0  # run's --max-time-minutes
+    call_cap = int(sys.argv[4]) if len(sys.argv) > 4 else 40
     ev = ROOT / "evidence" / "runs" / name
     ev.mkdir(parents=True, exist_ok=True)
     tasks = {json.loads(l)["instance_id"]: json.loads(l) for l in open(ROOT / "data/tasks.jsonl")}
@@ -177,6 +194,9 @@ def main() -> int:
                 a = json.loads(aj)
             except Exception:  # noqa: BLE001
                 continue
+            for k, v in a.items():
+                if isinstance(v, str) and fn in ("edit_file", "write_file", "run_command") and "\\n" in v and "\n" not in v:
+                    st["string_arg_literal_backslash_n_only"] += 1
             if any(not re.fullmatch(r"[A-Za-z_]\w*", k) for k in a):
                 st["junk_key_calls"] += 1
                 examples[(arm, "junk")].append(sorted(a)[:6])
@@ -209,6 +229,13 @@ def main() -> int:
                                                    if k in ("run_skill_script", "load_skill", "code_analyzer_agent", "get_code_subgraph")})
                                                    for j in js), collections.Counter())),
             "submitted_nonempty_patch": sum(1 for j in js if (j.get("agent_patch") or "").strip()),
+            "edit_strategies": dict(sum((collections.Counter((j.get("trace") or {}).get("edit_strategies", {})) for j in js),
+                                        collections.Counter())),
+            "error_types_top": collections.Counter(dict(sum((collections.Counter((j.get("trace") or {}).get("error_types", {}))
+                                                             for j in js), collections.Counter()))).most_common(8),
+            "tasks_hitting_time_cap": sum(1 for j in js if (j.get("duration_seconds") or 0) >= 0.95 * time_cap_s),
+            "tasks_hitting_call_cap": sum(1 for j in js if (j.get("tool_calls") or 0) >= call_cap),
+            "mean_duration_seconds": round(sum(j.get("duration_seconds") or 0 for j in js) / max(1, len(js)), 1),
             "wire": dict(st),
             "plain_quote_rate": round(st["value_plain"] / vals, 4) if vals else None,
             "array_value_call_rate": round(st["calls_with_array_value"] / st["calls"], 4) if st["calls"] else None,

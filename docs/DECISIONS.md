@@ -67,3 +67,15 @@ This replaces the brief's `~/.kaggle/kaggle.json` plan. The KGAT token is stored
   - The notebook cell runs the orchestrator in its own session, with output to a file and a hard limit of deadline + 40 min, then kills the group.
 - Tested locally: a fake server that logs the v5 OOM is killed with its child in about 20 s, and an early error exits in 2 s.
 - The scorer's own vLLM settings are the host's, not ours, so this affects only our capture runs.
+
+**D-012 (2026-11-25): Submission #2 stays skill-free. C4 says arrays are rare but doesn't measure skills.**
+- Evidence (v6, 31B on L4×4, 570 calls):
+  - 0 array values on the wire. 1 plain-quoted value in about 950 string values (0.1%).
+  - The array-typed `get_code_subgraph` was available to the sample arm and never called.
+- What it does not measure: neither arm exposed skills, so `run_skill_script` (`args`/`positional_args` arrays) emission is unmeasured.
+- An F1 hang kills the scorer's server for every remaining task. A 0.1% per-value drift rate across about 120 tasks × 20+ calls is not negligible against that blast radius.
+- So skills ship only after a capture arm with `submission/` (skills) shows its `run_skill_script` calls are array-free and marker-quoted.
+- Cheap evidence-backed fixes for the skill-free config:
+  - Tell the model `write_file` is workspace-only. Scratch scripts go through `run_command` (heredoc to /tmp or `python - <<EOF`). This cost a call in 6/12 tasks.
+  - Revisit the time cap: 7/12 tasks hit 5 min.
+- Revisit when a skills arm is captured.

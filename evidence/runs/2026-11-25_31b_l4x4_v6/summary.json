@@ -1,0 +1,137 @@
+{
+ "run": "2026-11-25_31b_l4x4_v6",
+ "jobs": 24,
+ "capture_records": 581,
+ "scorer_fatal_events": 0,
+ "system_hash_to_arm": {
+  "6b5e49b0": "B",
+  "58a32fdd": "A"
+ },
+ "arms": {
+  "A": {
+   "tasks": 12,
+   "runner_errors": 0,
+   "resolved_local_plain_grader": 2,
+   "resolved_scorer_equivalent": 2,
+   "tasks_in_flight_at_fatal": 0,
+   "mean_tool_calls": 22.17,
+   "trace_rejected_calls": 2,
+   "trace_tool_errors": 33,
+   "tasks_with_retry_storm_ge3": 0,
+   "skill_or_subagent_calls": {},
+   "submitted_nonempty_patch": 10,
+   "edit_strategies": {
+    "exact": 22,
+    "unescaped": 4
+   },
+   "error_types_top": [
+    [
+     "run_command:CommandError:",
+     26
+    ],
+    [
+     "run_command:CommandError:Traceback (most recent call last):\\n  File \\",
+     2
+    ],
+    [
+     "run_command:CommandError:grep: on_event\\",
+     1
+    ],
+    [
+     "edit_file:BudgetExceeded:Tool call budget exhausted (40 calls)",
+     1
+    ],
+    [
+     "edit_file:FileEditError:Failed to replace: old_string not found. Ensure you",
+     1
+    ]
+   ],
+   "tasks_hitting_time_cap": 7,
+   "tasks_hitting_call_cap": 2,
+   "mean_duration_seconds": 251.2,
+   "wire": {
+    "completions": 285,
+    "calls": 279,
+    "value_marker": 333,
+    "string_arg_literal_backslash_n_only": 9,
+    "value_bare": 104,
+    "junk_key_calls": 2,
+    "value_plain": 1,
+    "rejected_calls": 1
+   },
+   "plain_quote_rate": 0.0023,
+   "array_value_call_rate": 0.0,
+   "top_plain_params": [
+    [
+     "edit_file.import fastapi\\nfrom fastapi._compat import (\\n\", \"budget_warning\"",
+     1
+    ]
+   ],
+   "rejected_examples": [
+    [
+     "edit_file: mandatory input parameters are not present: old_string",
+     1
+    ]
+   ]
+  },
+  "B": {
+   "tasks": 12,
+   "runner_errors": 0,
+   "resolved_local_plain_grader": 3,
+   "resolved_scorer_equivalent": 3,
+   "tasks_in_flight_at_fatal": 0,
+   "mean_tool_calls": 23.67,
+   "trace_rejected_calls": 2,
+   "trace_tool_errors": 38,
+   "tasks_with_retry_storm_ge3": 0,
+   "skill_or_subagent_calls": {},
+   "submitted_nonempty_patch": 9,
+   "edit_strategies": {
+    "exact": 27,
+    "unescaped": 11
+   },
+   "error_types_top": [
+    [
+     "run_command:CommandError:",
+     24
+    ],
+    [
+     "write_file:FileWriteError:Path traversal detected: ",
+     6
+    ],
+    [
+     "run_command:CommandError:Traceback (most recent call last):\\n  File \\",
+     3
+    ],
+    [
+     "run_command:CommandError:============================= test session starts ==========",
+     1
+    ],
+    [
+     "edit_file:BudgetExceeded:Tool call budget exhausted (40 calls)",
+     1
+    ],
+    [
+     "edit_file:FileEditError:Target string occurs 2 times in fastapi/params.py. Please pr",
+     1
+    ]
+   ],
+   "tasks_hitting_time_cap": 7,
+   "tasks_hitting_call_cap": 2,
+   "mean_duration_seconds": 252.8,
+   "wire": {
+    "completions": 295,
+    "calls": 291,
+    "value_marker": 371,
+    "string_arg_literal_backslash_n_only": 24,
+    "value_bare": 143,
+    "junk_key_calls": 3
+   },
+   "plain_quote_rate": 0.0,
+   "array_value_call_rate": 0.0,
+   "top_plain_params": [],
+   "rejected_examples": []
+  }
+ },
+ "fatal_examples": []
+}

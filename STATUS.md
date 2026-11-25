@@ -30,10 +30,17 @@
 - `make verify-lite` passes from a fresh venv in about 1.5 min (no Kaggle account).
 - Firebreak v1 candidate in `submission/` uses skills. The audit flags `run_skill_script` arrays, so shipping it is gated on C4.
 
-## Capture runs (C4): no data yet
+## Capture runs (C4)
 - v1–v4 (E4B, T4×2): failed at start-up. T4 can't serve Gemma 4 (D-010).
 - v5 (31B, L4×4, 40 tasks × 2 arms): **no task ran.** vLLM ran out of memory in its sampler warm-up at 19:07 UTC, its API process stayed up, start-up timed out at about 19:26, and the notebook then hung until Kaggle's 12 h cell limit (07:01 UTC). About 12 GPU hours were spent. Evidence: `evidence/runs/2026-11-24_31b_l4x4_v5/failure.json`. Fixes: D-011.
-- v6 is prepared but not pushed (needs Greg's OK): 12 tasks × 2 arms, `--max-num-seqs 16`, 150 min run deadline, notebook hard limit 190 min.
+- **v6 (31B, L4×4, 12 fastapi tasks × 2 arms): complete in 39 min, about 0.65 GPU h.** Evidence: `evidence/runs/2026-11-25_31b_l4x4_v6/`.
+  - Wire: 570 calls, **0 array values**, 0 SCORER_FATAL. 1 plain-quoted value out of about 950 top-level string values; the other 704 were marker-quoted.
+  - The sample arm never called array-typed `get_code_subgraph` or its sub-agent.
+  - New fault, **JSON drift**: 5 calls had a JSON-style key (`start_line": 151` → key `start_line"`), which ADK drops silently. One call echoed a `budget_warning` JSON fragment into `edit_file`.
+  - Literal `\n` escapes appeared in 33 edit/write string args. swegemma's `unescaped` edit strategy repaired 15 of 64 successful edits, so the cost was zero.
+  - firebreak-lite wasted a call in 6/12 tasks on `write_file /tmp/repro.py` (path-traversal error).
+  - Time is the binding cap: 7/12 tasks per arm hit the 5 min limit; 2/12 hit 40 calls.
+  - Resolved (local plain grader, n=12, not significant): sample 2, firebreak-lite 3.
 
 ## Next
 - Phase 3 (needs a GPU OK): capture real completions (C4). This decides how often Gemma plain-quotes.
